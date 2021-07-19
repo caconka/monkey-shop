@@ -1,22 +1,13 @@
 package com.monkey.monkeyshop.logger;
 
-import com.monkey.monkeyshop.domain.model.HttpRequest;
+import com.monkey.monkeyshop.domain.core.HttpRequest;
 import com.monkey.monkeyshop.domain.model.User;
 
 public class Metadata {
 
-	private String requestId;
 	private String traceId;
 	private User user;
 	private HttpRequest httpRequest;
-
-	public String getRequestId() {
-		return requestId;
-	}
-
-	public void setRequestId(String requestId) {
-		this.requestId = requestId;
-	}
 
 	public String getTraceId() {
 		return traceId;

@@ -1,7 +1,6 @@
 package com.monkey.monkeyshop.logger;
 
-import com.monkey.monkeyshop.domain.model.Context;
-import com.monkey.monkeyshop.domain.model.HttpRequest;
+import com.monkey.monkeyshop.domain.core.Context;
 import io.vertx.core.json.Json;
 
 public class Log {
@@ -72,7 +71,6 @@ public class Log {
 			var metadata = new Metadata();
 
 			if (ctx != null) {
-				metadata.setRequestId(ctx.getRequestId());
 				metadata.setTraceId(ctx.getTraceId());
 				metadata.setHttpRequest(ctx.getHttpRequest());
 				metadata.setUser(ctx.getUserMetadata());

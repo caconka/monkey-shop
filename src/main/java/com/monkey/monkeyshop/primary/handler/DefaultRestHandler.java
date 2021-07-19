@@ -1,6 +1,6 @@
 package com.monkey.monkeyshop.primary.handler;
 
-import com.monkey.monkeyshop.domain.model.Context;
+import com.monkey.monkeyshop.domain.core.Context;
 import com.monkey.monkeyshop.error.exceptions.BackendException;
 import com.monkey.monkeyshop.error.exceptions.InternalServerErrorException;
 import com.monkey.monkeyshop.error.handler.DefaultErrorHandler;
@@ -15,6 +15,8 @@ import io.vertx.rxjava3.ext.web.Router;
 import io.vertx.rxjava3.ext.web.RoutingContext;
 import io.vertx.rxjava3.ext.web.handler.LoggerHandler;
 import io.vertx.rxjava3.ext.web.handler.ResponseTimeHandler;
+
+import java.util.stream.Stream;
 
 public interface DefaultRestHandler {
 
@@ -58,7 +60,7 @@ public interface DefaultRestHandler {
 		makeJsonResponse(routingCtx, ctx, HttpResponseStatus.OK.code(), body);
 	}
 
-	default void manageException(RoutingContext routingCtx, Throwable err, Context ctx) {
+	default void manageException(RoutingContext routingCtx, Context ctx, Throwable err) {
 		var errJson = Json.encode(err);
 		LOGGER.error(Log.build(ctx, "Unhandled exception: " + errJson));
 
@@ -77,7 +79,7 @@ public interface DefaultRestHandler {
 			.handler(handler)
 			.failureHandler(new DefaultErrorHandler());
 
-		LOGGER.info( String.format("%s: %s handler created", verb.name(), path));
+		LOGGER.info(String.format("%s: %s handler created", verb.name(), path));
 	}
 
 	default void addGetHandlerTo(Router router, String path, Handler<RoutingContext> handler){
@@ -90,6 +92,10 @@ public interface DefaultRestHandler {
 
 	default void addPatchHandlerTo(Router router, String path, Handler<RoutingContext> handler){
 		addHandlerTo(router, HttpMethod.PATCH, path, handler);
+	}
+
+	default void addDeleteHandlerTo(Router router, String path, Handler<RoutingContext> handler){
+		addHandlerTo(router, HttpMethod.DELETE, path, handler);
 	}
 
 }

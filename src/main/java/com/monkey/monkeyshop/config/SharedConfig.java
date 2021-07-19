@@ -81,8 +81,88 @@ public class SharedConfig {
 			});
 	}
 
-	public String getUserUri() {
-		return (String) getValue("monkeyShop.user.uri");
+	public String getVersion() {
+		return getServer()
+			.map(x -> x.getString("version"))
+			.orElseGet(() -> {
+				LOGGER.info("Using without version");
+				return "";
+			});
+	}
+
+	public String getGithubClientId() {
+		return Optional.ofNullable(System.getenv("GITHUB_CLIENT_ID"))
+			.orElseThrow();
+	}
+
+	public String getGithubClientSecret() {
+		return Optional.ofNullable(System.getenv("GITHUB_CLIENT_SECRET"))
+			.orElseThrow();
+	}
+
+	public String getAuthBasePath() {
+		return (String) getValue("monkeyShop.http.auth.login");
+	}
+
+	public String getAuthCallbackUrl() {
+		return getServer()
+			.map(x ->
+				x.getString("protocol") + "://" + getHost() + ":" + getPort() + "/" + getContext() + "/" + getVersion()
+					+ getAuthCallbackPath()
+			)
+			.orElseThrow();
+	}
+
+	public String getMongoUri() {
+		return (String) getValue("mongo.uri");
+	}
+
+	public String getMongoDb() {
+		return (String) getValue("mongo.db");
+	}
+
+	public String getAuthCallbackPath() {
+		return (String) getValue("monkeyShop.http.auth.callback");
+	}
+
+	public String getGetUsersPath() {
+		return (String) getValue("monkeyShop.http.user.getUsers");
+	}
+
+	public String getPostUsersPath() {
+		return (String) getValue("monkeyShop.http.user.postUsers");
+	}
+
+	public String getGetUserPath() {
+		return (String) getValue("monkeyShop.http.user.getUser");
+	}
+
+	public String getPatchUserPath() {
+		return (String) getValue("monkeyShop.http.user.patchUser");
+	}
+
+	public String getDeleteUserPath() {
+		return (String) getValue("monkeyShop.http.user.deleteUser");
+	}
+
+	public String getGetCustomersPath() {
+		return (String) getValue("monkeyShop.http.customer.getCustomers");
+	}
+
+	public String getPostCustomersPath() {
+		return (String) getValue("monkeyShop.http.customer.postCustomers");
+	}
+
+	public String getGetCustomerPath() {
+		return (String) getValue("monkeyShop.http.customer.getCustomer");
+	}
+
+	public String getPatchCustomerPath() {
+		return (String) getValue("monkeyShop.http.customer.patchCustomer");
+	}
+
+	public String getDeleteCustomerPath() {
+		return (String) getValue("monkeyShop.http.customer.deleteCustomer");
 	}
 
 	private Object getValue(String pattern){

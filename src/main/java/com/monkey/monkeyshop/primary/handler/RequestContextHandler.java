@@ -1,14 +1,12 @@
 package com.monkey.monkeyshop.primary.handler;
 
-import com.monkey.monkeyshop.domain.model.Context;
+import com.monkey.monkeyshop.domain.core.Context;
+import com.monkey.monkeyshop.domain.model.User;
 import io.vertx.core.Handler;
 import io.vertx.rxjava3.core.http.HttpServerRequest;
 import io.vertx.rxjava3.ext.web.RoutingContext;
 
-import java.util.Map;
 import java.util.Optional;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static java.util.concurrent.TimeUnit.NANOSECONDS;
@@ -16,7 +14,6 @@ import static java.util.concurrent.TimeUnit.NANOSECONDS;
 public class RequestContextHandler implements Handler<RoutingContext> {
 
 	public static final String TRACE_ID = "TraceId";
-	public static final String REQUEST_ID = "RequestId";
 	public static final String AUTHORIZATION = "Authorization";
 	public static final String CONTEXT = "Context";
 
@@ -29,20 +26,16 @@ public class RequestContextHandler implements Handler<RoutingContext> {
 
 	@Override
 	public void handle(RoutingContext routingCtx) {
-		var traceId = Optional.ofNullable(routingCtx.request().getHeader(TRACE_ID))
+		var req = routingCtx.request();
+		var traceId = Optional.ofNullable(req.getHeader(TRACE_ID))
 			.orElseGet(() -> Long.toHexString(System.currentTimeMillis()));
 
-		var requestId = routingCtx.request().getHeader(REQUEST_ID);
-		var authorization = routingCtx.request().getHeader(AUTHORIZATION);
-		var path = routingCtx.request().path();
-		var method = routingCtx.request().method().toString();
+		var authorization = req.getHeader(AUTHORIZATION);
+		var path = req.path();
+		var method = req.method().toString();
 
 		var ctxBuilder = Context.builder();
 		ctxBuilder.withTraceId(traceId);
-
-		if (requestId != null && !requestId.isEmpty()) {
-			ctxBuilder.withRequestId(requestId);
-		}
 
 		if (authorization != null && !authorization.isEmpty()) {
 			ctxBuilder.withAuthorization(authorization);
@@ -57,6 +50,18 @@ public class RequestContextHandler implements Handler<RoutingContext> {
 		}
 
 		var ctx = ctxBuilder.build();
+
+		var headers = req.headers();
+		if (headers.contains("User-Agent")) {
+			var userAgent = (String) headers.get("User-Agent");
+			ctx.getHttpRequest().setUserAgent(userAgent);
+		}
+
+		if (headers.contains("user")) {
+			var user = (String) headers.get("user");
+			ctx.setUserMetadata(new User(user));
+		}
+
 		routingCtx.put(CONTEXT, ctx);
 		routingCtx.next();
 	}

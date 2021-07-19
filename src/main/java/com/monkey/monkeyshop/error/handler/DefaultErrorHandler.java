@@ -1,5 +1,6 @@
 package com.monkey.monkeyshop.error.handler;
 
+import com.monkey.monkeyshop.error.exceptions.BackendException;
 import com.monkey.monkeyshop.error.exceptions.BadRequestException;
 import com.monkey.monkeyshop.error.exceptions.InternalServerErrorException;
 import com.monkey.monkeyshop.error.exceptions.ResourceNotFoundException;
@@ -9,7 +10,6 @@ import io.vertx.core.Handler;
 import io.vertx.core.impl.logging.Logger;
 import io.vertx.core.impl.logging.LoggerFactory;
 import io.vertx.core.json.Json;
-import io.vertx.json.schema.ValidationException;
 import io.vertx.rxjava3.ext.web.RoutingContext;
 
 import java.net.UnknownHostException;
@@ -27,12 +27,12 @@ public class DefaultErrorHandler implements Handler<RoutingContext> {
 			var unauthorizedException = new UnauthorizedException();
 			routingCtx.response().setStatusCode(unauthorizedException.getHttpCode());
 			body = Json.encodePrettily(unauthorizedException.getErrorDto());
-		} else if (err instanceof UnknownHostException) {
-			var res = new ResourceNotFoundException(err.getMessage());
+		} else if (err instanceof BackendException) {
+			var res = (BackendException) err;
 			routingCtx.response().setStatusCode(res.getHttpCode());
 			body = Json.encodePrettily(res.getErrorDto());
-		} else if (err instanceof ValidationException) {
-			var res = new BadRequestException(err.getMessage());
+		} else if (err instanceof UnknownHostException) {
+			var res = new ResourceNotFoundException(err.getMessage());
 			routingCtx.response().setStatusCode(res.getHttpCode());
 			body = Json.encodePrettily(res.getErrorDto());
 		} else {

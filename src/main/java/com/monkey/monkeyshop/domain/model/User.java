@@ -1,11 +1,17 @@
 package com.monkey.monkeyshop.domain.model;
 
-import java.util.List;
-
 public class User {
 
 	private String id;
-	private List<String> roles;
+	private UserType type;
+	private String login;
+
+	public User() {
+	}
+
+	public User(String id) {
+		this.id = id;
+	}
 
 	public String getId() {
 		return id;
@@ -15,11 +21,19 @@ public class User {
 		this.id = id;
 	}
 
-	public List<String> getRoles() {
-		return roles;
+	public UserType getType() {
+		return type;
 	}
 
-	public void setRoles(List<String> roles) {
-		this.roles = roles;
+	public void setType(UserType type) {
+		this.type = type;
+	}
+
+	public String getLogin() {
+		return login;
+	}
+
+	public void setLogin(String login) {
+		this.login = login;
 	}
 }

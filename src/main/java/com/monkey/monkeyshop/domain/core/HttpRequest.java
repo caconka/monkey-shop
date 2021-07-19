@@ -1,10 +1,11 @@
-package com.monkey.monkeyshop.domain.model;
+package com.monkey.monkeyshop.domain.core;
 
 public class HttpRequest {
 
 	private String path;
 	private String method;
 	private Long latency;
+	private String userAgent;
 	private Long responseSize;
 	private int status;
 
@@ -42,6 +43,14 @@ public class HttpRequest {
 
 	public void setLatency(Long latency) {
 		this.latency = latency;
+	}
+
+	public String getUserAgent() {
+		return userAgent;
+	}
+
+	public void setUserAgent(String userAgent) {
+		this.userAgent = userAgent;
 	}
 
 	public Long getResponseSize() {

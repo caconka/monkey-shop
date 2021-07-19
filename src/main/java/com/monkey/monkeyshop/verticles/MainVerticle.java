@@ -18,18 +18,18 @@ public class MainVerticle extends AbstractVerticle {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(MainVerticle.class.getName());
 
-	private void startWithHandlers(Vertx vertx, SharedConfig sharedConfig, DefaultRestHandler... restHandlers) {
-		var httpHost = sharedConfig.getHost();
-		var httpPort = sharedConfig.getPort();
-		var ctx = sharedConfig.getContext();
+	private void startWithHandlers(Vertx vertx, SharedConfig conf, DefaultRestHandler... restHandlers) {
+		var httpHost = conf.getHost();
+		var httpPort = conf.getPort();
 		var router = Router.router(vertx);
 
 		var allowedHeaders = new HashSet<String>();
 		allowedHeaders.add("Origin");
 		allowedHeaders.add("Content-Length");
 		allowedHeaders.add("Content-Type");
-		allowedHeaders.add("Authorization");
 		allowedHeaders.add("Cache-Control");
+		allowedHeaders.add("Authorization");
+		allowedHeaders.add("User");
 
 		router.route().handler(CorsHandler.create("*")
 			.allowedHeaders(allowedHeaders)
@@ -40,29 +40,34 @@ public class MainVerticle extends AbstractVerticle {
 			.allowedMethod(HttpMethod.OPTIONS)
 			.allowedMethod(HttpMethod.PUT));
 
+		var version = conf.getVersion().isEmpty() ? "" : "/" + conf.getVersion();
+		var contextPath = "/" + conf.getContext() + version;
+
 		Stream.of(restHandlers)
 			.map(h -> restRouter(vertx, h))
-			.forEach(c -> router.mountSubRouter("/", c));
+			.forEach(r -> router.mountSubRouter(contextPath, r));
 
 		vertx.createHttpServer().requestHandler(router).rxListen(httpPort, httpHost)
 			.subscribe(httpServer ->
-				LOGGER.info(String.format("HTTP server started on http://%s:%s/%s", httpHost, httpPort.toString(), ctx))
+				LOGGER.info(String.format("HTTP server started on http://%s:%s%s", httpHost, httpPort.toString(), contextPath))
 			);
 	}
 
 	private Router restRouter(Vertx vertx, DefaultRestHandler... restHandlers) {
 		var router = Router.router(vertx);
-		Stream.of(restHandlers).forEach(restHandler -> restHandler.addHandlersTo(router));
+		Stream.of(restHandlers).forEach(h -> h.addHandlersTo(router));
 		return router;
 	}
 
 	@Override
 	public void start() {
 		var handlerComponents = DaggerHandlerComponents.create();
-		var sharedConfig = SharedConfig.getInstance();
+		var config = SharedConfig.getInstance();
 
-		var userHandler = handlerComponents.buildUserHandler();
+		var authHandler = handlerComponents.buildAuthHandler();
+		var userHAndler = handlerComponents.buildUserHandler();
+		var customerHandler = handlerComponents.buildCustomerHandler();
 
-		startWithHandlers(vertx, sharedConfig, userHandler);
+		startWithHandlers(vertx, config, authHandler, userHAndler, customerHandler);
 	}
 }

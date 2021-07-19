@@ -1,16 +1,15 @@
-package com.monkey.monkeyshop.domain.model;
+package com.monkey.monkeyshop.domain.core;
 
+import com.monkey.monkeyshop.domain.model.User;
+import com.monkey.monkeyshop.domain.model.UserType;
 import io.vertx.core.json.JsonObject;
 
 import java.util.Base64;
-import java.util.Map;
 
 public class Context {
 
 	private String authorization;
-	private String requestId;
 	private String traceId;
-	private String spanId;
 	private User userMetadata = new User();
 	private HttpRequest httpRequest = new HttpRequest();
 
@@ -26,14 +25,6 @@ public class Context {
 
 	public void setAuthorization(String authorization) {
 		this.authorization = authorization;
-	}
-
-	public String getRequestId() {
-		return requestId;
-	}
-
-	public void setRequestId(String requestId) {
-		this.requestId = requestId;
 	}
 
 	public User getUserMetadata() {
@@ -52,14 +43,6 @@ public class Context {
 		this.traceId = traceId;
 	}
 
-	public String getSpanId() {
-		return spanId;
-	}
-
-	public void setSpanId(String spanId) {
-		this.spanId = spanId;
-	}
-
 	public HttpRequest getHttpRequest() {
 		return httpRequest;
 	}
@@ -74,11 +57,6 @@ public class Context {
 
 		public Context build(){
 			return context;
-		}
-
-		public ContextBuilder withRequestId(String xRequestId) {
-			this.context.requestId = xRequestId;
-			return this;
 		}
 
 		public ContextBuilder withTraceId(String traceId) {
@@ -97,10 +75,10 @@ public class Context {
 					var userMetadataDecoded = body.getJsonObject("user_metadata");
 
 					if (userMetadataDecoded != null) {
-						var rolesDecoded = userMetadataDecoded.getJsonArray("roles");
 						var userDecoded = userMetadataDecoded.getString("id");
+						var userType = userMetadataDecoded.getString("type");
 
-						this.context.userMetadata.setRoles(rolesDecoded != null ? rolesDecoded.getList() : null);
+						this.context.userMetadata.setType(UserType.valueOf(userType));
 						this.context.userMetadata.setId(userDecoded);
 					}
 				}
