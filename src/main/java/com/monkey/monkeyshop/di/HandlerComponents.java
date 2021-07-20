@@ -11,7 +11,9 @@ import javax.inject.Singleton;
 @Component(
 	modules = {
 		CommonsModule.class,
-		LogicModule.class
+		ClientModule.class,
+		LogicModule.class,
+		DaoModule.class
 	}
 )
 public interface HandlerComponents {

@@ -1,6 +1,7 @@
 package com.monkey.monkeyshop.primary.handler;
 
 import com.monkey.monkeyshop.config.SharedConfig;
+import com.monkey.monkeyshop.domain.logic.UserLogic;
 import io.vertx.rxjava3.ext.web.Router;
 import io.vertx.rxjava3.ext.web.RoutingContext;
 import io.vertx.rxjava3.ext.web.validation.ValidationHandler;
@@ -13,6 +14,7 @@ public class UserHandler implements DefaultRestHandler {
 
 	private static final String BASE_PATH = "/users";
 
+	private final UserLogic userLogic;
 	private final String listUsersPath;
 	private final String createUserPath;
 	private final String getUserPath;
@@ -20,7 +22,8 @@ public class UserHandler implements DefaultRestHandler {
 	private final String deleteUserPath;
 
 	@Inject
-	public UserHandler(SharedConfig conf) {
+	public UserHandler(UserLogic userLogic, SharedConfig conf) {
+		this.userLogic = userLogic;
 		listUsersPath = conf.getGetUsersPath();
 		createUserPath = conf.getPostUsersPath();
 		getUserPath = conf.getGetUserPath();

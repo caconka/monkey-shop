@@ -4,14 +4,20 @@ server:
   port: 8888
   context: monkeyshop
   version: v1
-mongo:
-  uri: mongodb://localhost:27017
-  db: users
+storage:
+  versionControl: true
+  eraseDB: false
+  host: 127.0.0.1
+  db: monkeyshop-db
+  schema: user_data
+  port: 5432
+  user: monkey
+  poolSize: 4
 monkeyShop:
   http:
     auth:
-      login: "/authn"
-      callback: "/authn/callback"
+      login: /authn
+      callback: /authn/callback
     user:
       getUsers: ""
       postUsers: ""

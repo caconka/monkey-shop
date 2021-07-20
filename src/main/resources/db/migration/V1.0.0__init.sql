@@ -1,0 +1,6 @@
+CREATE TABLE IF NOT EXISTS user_data.user (
+   email VARCHAR (256) NOT NULL PRIMARY KEY,
+   role VARCHAR (14) NOT NULL,
+   created_at TIMESTAMP NOT NULL,
+   updated_at TIMESTAMP NOT NULL
+);

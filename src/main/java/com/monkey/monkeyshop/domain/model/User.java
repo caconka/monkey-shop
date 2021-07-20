@@ -3,8 +3,8 @@ package com.monkey.monkeyshop.domain.model;
 public class User {
 
 	private String id;
-	private UserType type;
-	private String login;
+	private Boolean admin;
+	private String email;
 
 	public User() {
 	}
@@ -21,19 +21,19 @@ public class User {
 		this.id = id;
 	}
 
-	public UserType getType() {
-		return type;
+	public Boolean getAdmin() {
+		return admin;
 	}
 
-	public void setType(UserType type) {
-		this.type = type;
+	public void setAdmin(Boolean admin) {
+		this.admin = admin;
 	}
 
-	public String getLogin() {
-		return login;
+	public String getEmail() {
+		return email;
 	}
 
-	public void setLogin(String login) {
-		this.login = login;
+	public void setEmail(String email) {
+		this.email = email;
 	}
 }

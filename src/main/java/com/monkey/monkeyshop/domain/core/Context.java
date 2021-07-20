@@ -76,9 +76,9 @@ public class Context {
 
 					if (userMetadataDecoded != null) {
 						var userDecoded = userMetadataDecoded.getString("id");
-						var userType = userMetadataDecoded.getString("type");
+						var admin = userMetadataDecoded.getBoolean("admin");
 
-						this.context.userMetadata.setType(UserType.valueOf(userType));
+						this.context.userMetadata.setAdmin(admin);
 						this.context.userMetadata.setId(userDecoded);
 					}
 				}

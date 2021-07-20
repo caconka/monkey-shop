@@ -17,13 +17,12 @@ import javax.inject.Provider;
     "unchecked",
     "rawtypes"
 })
-public final class CommonsModule_ProvideWebClientFactory implements Factory<WebClient> {
-  private final CommonsModule module;
+public final class ClientModule_ProvideWebClientFactory implements Factory<WebClient> {
+  private final ClientModule module;
 
   private final Provider<Vertx> vertxProvider;
 
-  public CommonsModule_ProvideWebClientFactory(CommonsModule module,
-      Provider<Vertx> vertxProvider) {
+  public ClientModule_ProvideWebClientFactory(ClientModule module, Provider<Vertx> vertxProvider) {
     this.module = module;
     this.vertxProvider = vertxProvider;
   }
@@ -33,12 +32,12 @@ public final class CommonsModule_ProvideWebClientFactory implements Factory<WebC
     return provideWebClient(module, vertxProvider.get());
   }
 
-  public static CommonsModule_ProvideWebClientFactory create(CommonsModule module,
+  public static ClientModule_ProvideWebClientFactory create(ClientModule module,
       Provider<Vertx> vertxProvider) {
-    return new CommonsModule_ProvideWebClientFactory(module, vertxProvider);
+    return new ClientModule_ProvideWebClientFactory(module, vertxProvider);
   }
 
-  public static WebClient provideWebClient(CommonsModule instance, Vertx vertx) {
+  public static WebClient provideWebClient(ClientModule instance, Vertx vertx) {
     return Preconditions.checkNotNullFromProvides(instance.provideWebClient(vertx));
   }
 }

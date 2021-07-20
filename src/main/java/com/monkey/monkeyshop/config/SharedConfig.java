@@ -1,5 +1,6 @@
 package com.monkey.monkeyshop.config;
 
+import com.monkey.monkeyshop.error.exceptions.InternalServerErrorException;
 import io.vertx.core.impl.logging.Logger;
 import io.vertx.core.impl.logging.LoggerFactory;
 import io.vertx.core.json.JsonObject;
@@ -100,6 +101,16 @@ public class SharedConfig {
 			.orElseThrow();
 	}
 
+	public String getGoogleClientId() {
+		return Optional.ofNullable(System.getenv("GOOGLE_CLIENT_ID"))
+			.orElseThrow();
+	}
+
+	public String getGoogleClientSecret() {
+		return Optional.ofNullable(System.getenv("GOOGLE_CLIENT_SECRET"))
+			.orElseThrow();
+	}
+
 	public String getAuthBasePath() {
 		return (String) getValue("monkeyShop.http.auth.login");
 	}
@@ -113,12 +124,58 @@ public class SharedConfig {
 			.orElseThrow();
 	}
 
-	public String getMongoUri() {
-		return (String) getValue("mongo.uri");
+	public String getStorageSchema() {
+		return (String) getValue("storage.schema");
 	}
 
-	public String getMongoDb() {
-		return (String) getValue("mongo.db");
+	public int getStoragePort() {
+		return (int) getValue("storage.port");
+	}
+
+	public String getStorageHost() {
+		return (String) getValue("storage.host");
+	}
+
+	public String getStorageDb() {
+		return (String) getValue("storage.db");
+	}
+
+	public String getStorageUser() {
+		return (String) getValue("storage.user");
+	}
+
+	public int getStoragePoolSize() {
+		var poolSize = (int) getValue("storage.poolSize");
+
+		if (poolSize <= 0) {
+			throw new InternalServerErrorException("Storage pool size value is incorrect. Must be greater than zero.");
+		}
+
+		return poolSize;
+	}
+
+	public boolean getStorageVersionControl(boolean defaultVersionControl) {
+		var versionControl = (Boolean) getValue("storage.versionControl");
+
+		if (versionControl == null) {
+			return defaultVersionControl;
+		}
+
+		return versionControl;
+	}
+
+	public String getStoragePwd() {
+		return System.getenv("POSTGRES_PASSWORD");
+	}
+
+	public boolean getStorageEraseDb(boolean defaultEraseDb) {
+		var eraseDb = (Boolean) getValue("storage.eraseDb");
+
+		if (eraseDb == null) {
+			return defaultEraseDb;
+		}
+
+		return eraseDb;
 	}
 
 	public String getAuthCallbackPath() {

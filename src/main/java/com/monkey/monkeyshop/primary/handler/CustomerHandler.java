@@ -1,6 +1,7 @@
 package com.monkey.monkeyshop.primary.handler;
 
 import com.monkey.monkeyshop.config.SharedConfig;
+import com.monkey.monkeyshop.domain.logic.CustomerLogic;
 import com.monkey.monkeyshop.primary.adapter.CustomerAdapter;
 import io.vertx.rxjava3.ext.web.Router;
 import io.vertx.rxjava3.ext.web.RoutingContext;
@@ -11,6 +12,7 @@ public class CustomerHandler implements DefaultRestHandler {
 
 	private static final String BASE_PATH = "/customers";
 
+	private final CustomerLogic customerLogic;
 	private final String listCustomersPath;
 	private final String createCustomerPath;
 	private final String getCustomerPath;
@@ -18,7 +20,8 @@ public class CustomerHandler implements DefaultRestHandler {
 	private final String deleteCustomerPath;
 
 	@Inject
-	public CustomerHandler(SharedConfig conf) {
+	public CustomerHandler(CustomerLogic customerLogic, SharedConfig conf) {
+		this.customerLogic = customerLogic;
 		listCustomersPath = conf.getGetCustomersPath();
 		createCustomerPath = conf.getPostCustomersPath();
 		getCustomerPath = conf.getGetCustomerPath();
@@ -36,7 +39,12 @@ public class CustomerHandler implements DefaultRestHandler {
 	}
 
 	private void listCustomers(RoutingContext routingCtx) {
-		makeJsonOkResponse(routingCtx, getContext(routingCtx), "List Customers");
+		var ctx = getContext(routingCtx);
+		customerLogic.listCustomers(ctx)
+			.subscribe(
+				cs -> makeJsonOkResponse(routingCtx, ctx, cs),
+				err -> manageException(routingCtx, ctx, err)
+			);
 	}
 
 	private void createCustomer(RoutingContext routingCtx) {
@@ -52,14 +60,17 @@ public class CustomerHandler implements DefaultRestHandler {
 	}
 
 	private void getCustomer(RoutingContext routingCtx) {
+		var ctx = getContext(routingCtx);
 		makeJsonOkResponse(routingCtx, getContext(routingCtx), "Customer");
 	}
 
 	private void updateCustomer(RoutingContext routingCtx) {
+		var ctx = getContext(routingCtx);
 		makeJsonOkResponse(routingCtx, getContext(routingCtx), "Customer updated");
 	}
 
 	private void deleteCustomer(RoutingContext routingCtx) {
+		var ctx = getContext(routingCtx);
 		makeJsonOkResponse(routingCtx, getContext(routingCtx), "Customer deleted");
 	}
 }

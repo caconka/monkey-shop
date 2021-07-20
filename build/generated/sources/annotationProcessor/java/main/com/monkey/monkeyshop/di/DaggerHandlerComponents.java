@@ -1,9 +1,13 @@
 package com.monkey.monkeyshop.di;
 
 import com.monkey.monkeyshop.config.SharedConfig;
+import com.monkey.monkeyshop.domain.logic.CustomerLogic;
+import com.monkey.monkeyshop.domain.logic.UserLogic;
+import com.monkey.monkeyshop.domain.port.StoreDao;
 import com.monkey.monkeyshop.primary.handler.AuthHandler;
 import com.monkey.monkeyshop.primary.handler.CustomerHandler;
 import com.monkey.monkeyshop.primary.handler.UserHandler;
+import com.monkey.monkeyshop.secondary.postgres.dao.StorageClient;
 import dagger.internal.DaggerGenerated;
 import dagger.internal.DoubleCheck;
 import dagger.internal.Preconditions;
@@ -33,9 +37,18 @@ public final class DaggerHandlerComponents implements HandlerComponents {
 
   private Provider<JWTAuth> proviceJWTAuthProvider;
 
-  private DaggerHandlerComponents(CommonsModule commonsModuleParam) {
+  private Provider<StorageClient> provideStorageClientProvider;
 
-    initialize(commonsModuleParam);
+  private Provider<StoreDao> provideStoreDaoProvider;
+
+  private Provider<UserLogic> provideUserLogicProvider;
+
+  private Provider<CustomerLogic> provideCustomerLogicProvider;
+
+  private DaggerHandlerComponents(CommonsModule commonsModuleParam, ClientModule clientModuleParam,
+      LogicModule logicModuleParam, DaoModule daoModuleParam) {
+
+    initialize(commonsModuleParam, clientModuleParam, logicModuleParam, daoModuleParam);
 
   }
 
@@ -48,11 +61,17 @@ public final class DaggerHandlerComponents implements HandlerComponents {
   }
 
   @SuppressWarnings("unchecked")
-  private void initialize(final CommonsModule commonsModuleParam) {
+  private void initialize(final CommonsModule commonsModuleParam,
+      final ClientModule clientModuleParam, final LogicModule logicModuleParam,
+      final DaoModule daoModuleParam) {
     this.provideVertxProvider = DoubleCheck.provider(CommonsModule_ProvideVertxFactory.create(commonsModuleParam));
     this.provideConfigProvider = DoubleCheck.provider(CommonsModule_ProvideConfigFactory.create(commonsModuleParam));
-    this.provideWebClientProvider = DoubleCheck.provider(CommonsModule_ProvideWebClientFactory.create(commonsModuleParam, provideVertxProvider));
+    this.provideWebClientProvider = DoubleCheck.provider(ClientModule_ProvideWebClientFactory.create(clientModuleParam, provideVertxProvider));
     this.proviceJWTAuthProvider = DoubleCheck.provider(CommonsModule_ProviceJWTAuthFactory.create(commonsModuleParam, provideVertxProvider));
+    this.provideStorageClientProvider = DoubleCheck.provider(ClientModule_ProvideStorageClientFactory.create(clientModuleParam, provideVertxProvider, provideConfigProvider));
+    this.provideStoreDaoProvider = DoubleCheck.provider(DaoModule_ProvideStoreDaoFactory.create(daoModuleParam, provideStorageClientProvider));
+    this.provideUserLogicProvider = DoubleCheck.provider(LogicModule_ProvideUserLogicFactory.create(logicModuleParam, provideStoreDaoProvider));
+    this.provideCustomerLogicProvider = DoubleCheck.provider(LogicModule_ProvideCustomerLogicFactory.create(logicModuleParam));
   }
 
   @Override
@@ -62,16 +81,22 @@ public final class DaggerHandlerComponents implements HandlerComponents {
 
   @Override
   public UserHandler buildUserHandler() {
-    return new UserHandler(provideConfigProvider.get());
+    return new UserHandler(provideUserLogicProvider.get(), provideConfigProvider.get());
   }
 
   @Override
   public CustomerHandler buildCustomerHandler() {
-    return new CustomerHandler(provideConfigProvider.get());
+    return new CustomerHandler(provideCustomerLogicProvider.get(), provideConfigProvider.get());
   }
 
   public static final class Builder {
     private CommonsModule commonsModule;
+
+    private ClientModule clientModule;
+
+    private LogicModule logicModule;
+
+    private DaoModule daoModule;
 
     private Builder() {
     }
@@ -81,12 +106,18 @@ public final class DaggerHandlerComponents implements HandlerComponents {
       return this;
     }
 
-    /**
-     * @deprecated This module is declared, but an instance is not used in the component. This method is a no-op. For more, see https://dagger.dev/unused-modules.
-     */
-    @Deprecated
+    public Builder clientModule(ClientModule clientModule) {
+      this.clientModule = Preconditions.checkNotNull(clientModule);
+      return this;
+    }
+
     public Builder logicModule(LogicModule logicModule) {
-      Preconditions.checkNotNull(logicModule);
+      this.logicModule = Preconditions.checkNotNull(logicModule);
+      return this;
+    }
+
+    public Builder daoModule(DaoModule daoModule) {
+      this.daoModule = Preconditions.checkNotNull(daoModule);
       return this;
     }
 
@@ -94,7 +125,16 @@ public final class DaggerHandlerComponents implements HandlerComponents {
       if (commonsModule == null) {
         this.commonsModule = new CommonsModule();
       }
-      return new DaggerHandlerComponents(commonsModule);
+      if (clientModule == null) {
+        this.clientModule = new ClientModule();
+      }
+      if (logicModule == null) {
+        this.logicModule = new LogicModule();
+      }
+      if (daoModule == null) {
+        this.daoModule = new DaoModule();
+      }
+      return new DaggerHandlerComponents(commonsModule, clientModule, logicModule, daoModule);
     }
   }
 }
