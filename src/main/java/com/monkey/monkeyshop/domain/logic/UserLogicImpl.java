@@ -30,7 +30,7 @@ public class UserLogicImpl implements UserLogic {
 
 	@Override
 	public Completable createUser(Context ctx, User user) {
-		return Completable.complete();
+		return store.save(ctx, user).flatMapCompletable(res -> Completable.complete());
 	}
 
 	@Override

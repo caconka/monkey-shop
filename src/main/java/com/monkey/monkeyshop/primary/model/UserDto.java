@@ -1,26 +1,18 @@
-package com.monkey.monkeyshop.domain.model;
+package com.monkey.monkeyshop.primary.model;
 
-public class User {
+public class UserDto {
 
-	private String id;
 	private String email;
 	private Boolean admin;
 	private String createdAt;
 	private String updatedAt;
 
-	public User() {
+	public String getEmail() {
+		return email;
 	}
 
-	public User(String id) {
-		this.id = id;
-	}
-
-	public String getId() {
-		return id;
-	}
-
-	public void setId(String id) {
-		this.id = id;
+	public void setEmail(String email) {
+		this.email = email;
 	}
 
 	public Boolean getAdmin() {
@@ -29,14 +21,6 @@ public class User {
 
 	public void setAdmin(Boolean admin) {
 		this.admin = admin;
-	}
-
-	public String getEmail() {
-		return email;
-	}
-
-	public void setEmail(String email) {
-		this.email = email;
 	}
 
 	public String getCreatedAt() {

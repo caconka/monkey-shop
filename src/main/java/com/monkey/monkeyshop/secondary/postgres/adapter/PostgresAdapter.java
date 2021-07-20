@@ -10,7 +10,7 @@ import java.util.Optional;
 
 public class PostgresAdapter {
 
-	private static final String TABLE_NAME = "user";
+	private static final String TABLE_NAME = "user_data.user";
 	public static final String FIELD_EMAIL = "email";
 	public static final String FIELD_ROLE = "role";
 	public static final String FIELD_CREATED_AT = "created_at";
@@ -40,8 +40,8 @@ public class PostgresAdapter {
 
 		user.setEmail(row.getString(FIELD_EMAIL));
 		user.setRole(UserRole.valueOf(row.getString(FIELD_ROLE)));
-		user.setCreatedAt(row.getString(FIELD_CREATED_AT));
-		user.setUpdatedAt(row.getString(FIELD_UPDATED_AT));
+		user.setCreatedAt(row.getLocalDateTime(FIELD_CREATED_AT).toString());
+		user.setUpdatedAt(row.getLocalDateTime(FIELD_UPDATED_AT).toString());
 
 		return Maybe.just(user);
 	}

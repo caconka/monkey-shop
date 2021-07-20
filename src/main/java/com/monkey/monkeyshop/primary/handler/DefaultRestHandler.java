@@ -16,11 +16,12 @@ import io.vertx.rxjava3.ext.web.RoutingContext;
 import io.vertx.rxjava3.ext.web.handler.LoggerHandler;
 import io.vertx.rxjava3.ext.web.handler.ResponseTimeHandler;
 
-import java.util.stream.Stream;
-
 public interface DefaultRestHandler {
 
 	Logger LOGGER = LoggerFactory.getLogger(DefaultRestHandler.class.getName());
+
+	String LOG_REQUEST_TO = "Received request to ";
+	String LOG_REQUEST_BODY = "Request body: ";
 
 	String HEADER_CONTENT_TYPE = "Content-Type";
 	String CONTENT_TYPE_APPLICATION_JSON = "application/json";
@@ -39,6 +40,13 @@ public interface DefaultRestHandler {
 				res.setStatusCode(HttpCode)
 					.putHeader(HEADER_CONTENT_TYPE, contentType)
 					.end(body);
+			} else if (body == null) {
+				res.setStatusCode(HttpCode)
+					.putHeader(RequestContextHandler.TRACE_ID, ctx.getTraceId())
+					.end();
+
+				RequestContextHandler.fillHttpResponseContext(routingCtx, ctx, 0);
+				LOGGER.info(Log.build(ctx, String.format("Status %s", HttpCode)));
 			} else {
 				res.setStatusCode(HttpCode)
 					.putHeader(HEADER_CONTENT_TYPE, contentType)
@@ -50,6 +58,10 @@ public interface DefaultRestHandler {
 			}
 
 		}
+	}
+
+	default void makeResponse(RoutingContext routingCtx, Context ctx, int httpCode) {
+		makeResponse(routingCtx, ctx, httpCode, null, null);
 	}
 
 	default void makeJsonResponse(RoutingContext routingCtx, Context ctx, int httpCode, Object body) {
