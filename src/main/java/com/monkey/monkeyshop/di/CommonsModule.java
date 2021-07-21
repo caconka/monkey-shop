@@ -27,11 +27,11 @@ public class CommonsModule {
 
 	@Provides
 	@Singleton
-	public JWTAuth proviceJWTAuth(Vertx vertx) {
+	public JWTAuth proviceJWTAuth(Vertx vertx, SharedConfig conf) {
 		return JWTAuth.create(vertx, new JWTAuthOptions()
 			.addPubSecKey(new PubSecKeyOptions()
 				.setAlgorithm("HS256")
-				.setBuffer("keyboard cat")));
+				.setBuffer(conf.getAuthJwtPubSec())));
 	}
 
 }

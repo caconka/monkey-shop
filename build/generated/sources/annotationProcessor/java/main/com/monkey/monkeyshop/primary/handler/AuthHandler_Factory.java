@@ -1,11 +1,9 @@
 package com.monkey.monkeyshop.primary.handler;
 
 import com.monkey.monkeyshop.config.SharedConfig;
+import com.monkey.monkeyshop.domain.logic.AuthLogic;
 import dagger.internal.DaggerGenerated;
 import dagger.internal.Factory;
-import io.vertx.rxjava3.core.Vertx;
-import io.vertx.rxjava3.ext.auth.jwt.JWTAuth;
-import io.vertx.rxjava3.ext.web.client.WebClient;
 import javax.annotation.processing.Generated;
 import javax.inject.Provider;
 
@@ -19,35 +17,27 @@ import javax.inject.Provider;
     "rawtypes"
 })
 public final class AuthHandler_Factory implements Factory<AuthHandler> {
-  private final Provider<Vertx> vertxProvider;
+  private final Provider<AuthLogic> authLogicProvider;
 
   private final Provider<SharedConfig> confProvider;
 
-  private final Provider<WebClient> webClientProvider;
-
-  private final Provider<JWTAuth> jwtProvider;
-
-  public AuthHandler_Factory(Provider<Vertx> vertxProvider, Provider<SharedConfig> confProvider,
-      Provider<WebClient> webClientProvider, Provider<JWTAuth> jwtProvider) {
-    this.vertxProvider = vertxProvider;
+  public AuthHandler_Factory(Provider<AuthLogic> authLogicProvider,
+      Provider<SharedConfig> confProvider) {
+    this.authLogicProvider = authLogicProvider;
     this.confProvider = confProvider;
-    this.webClientProvider = webClientProvider;
-    this.jwtProvider = jwtProvider;
   }
 
   @Override
   public AuthHandler get() {
-    return newInstance(vertxProvider.get(), confProvider.get(), webClientProvider.get(), jwtProvider.get());
+    return newInstance(authLogicProvider.get(), confProvider.get());
   }
 
-  public static AuthHandler_Factory create(Provider<Vertx> vertxProvider,
-      Provider<SharedConfig> confProvider, Provider<WebClient> webClientProvider,
-      Provider<JWTAuth> jwtProvider) {
-    return new AuthHandler_Factory(vertxProvider, confProvider, webClientProvider, jwtProvider);
+  public static AuthHandler_Factory create(Provider<AuthLogic> authLogicProvider,
+      Provider<SharedConfig> confProvider) {
+    return new AuthHandler_Factory(authLogicProvider, confProvider);
   }
 
-  public static AuthHandler newInstance(Vertx vertx, SharedConfig conf, WebClient webClient,
-      JWTAuth jwt) {
-    return new AuthHandler(vertx, conf, webClient, jwt);
+  public static AuthHandler newInstance(AuthLogic authLogic, SharedConfig conf) {
+    return new AuthHandler(authLogic, conf);
   }
 }

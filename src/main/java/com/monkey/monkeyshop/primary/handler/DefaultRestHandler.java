@@ -4,12 +4,10 @@ import com.monkey.monkeyshop.domain.core.Context;
 import com.monkey.monkeyshop.error.exceptions.BackendException;
 import com.monkey.monkeyshop.error.exceptions.InternalServerErrorException;
 import com.monkey.monkeyshop.error.handler.DefaultErrorHandler;
-import com.monkey.monkeyshop.logger.Log;
+import com.monkey.monkeyshop.logger.Logger;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.vertx.core.Handler;
 import io.vertx.core.http.HttpMethod;
-import io.vertx.core.impl.logging.Logger;
-import io.vertx.core.impl.logging.LoggerFactory;
 import io.vertx.core.json.Json;
 import io.vertx.rxjava3.ext.web.Router;
 import io.vertx.rxjava3.ext.web.RoutingContext;
@@ -18,7 +16,7 @@ import io.vertx.rxjava3.ext.web.handler.ResponseTimeHandler;
 
 public interface DefaultRestHandler {
 
-	Logger LOGGER = LoggerFactory.getLogger(DefaultRestHandler.class.getName());
+	Logger LOGGER = new Logger(DefaultRestHandler.class);
 
 	String LOG_REQUEST_TO = "Received request to ";
 	String LOG_REQUEST_BODY = "Request body: ";
@@ -46,7 +44,7 @@ public interface DefaultRestHandler {
 					.end();
 
 				RequestContextHandler.fillHttpResponseContext(routingCtx, ctx, 0);
-				LOGGER.info(Log.build(ctx, String.format("Status %s", HttpCode)));
+				LOGGER.info(ctx, String.format("Status %s", HttpCode));
 			} else {
 				res.setStatusCode(HttpCode)
 					.putHeader(HEADER_CONTENT_TYPE, contentType)
@@ -54,7 +52,7 @@ public interface DefaultRestHandler {
 					.end(body);
 
 				RequestContextHandler.fillHttpResponseContext(routingCtx, ctx, body.getBytes().length);
-				LOGGER.info(Log.build(ctx, String.format("Status %s: %s", HttpCode, body)));
+				LOGGER.info(ctx, String.format("Status %s: %s", HttpCode, body));
 			}
 
 		}
@@ -74,7 +72,7 @@ public interface DefaultRestHandler {
 
 	default void manageException(RoutingContext routingCtx, Context ctx, Throwable err) {
 		var errJson = Json.encode(err);
-		LOGGER.error(Log.build(ctx, "Unhandled exception: " + errJson));
+		LOGGER.error(ctx, "Unhandled exception: " + errJson);
 
 		var exception = err instanceof BackendException
 			? (BackendException) err

@@ -91,45 +91,28 @@ public class SharedConfig {
 			});
 	}
 
-	public String getGithubClientId() {
-		return Optional.ofNullable(System.getenv("GITHUB_CLIENT_ID"))
-			.orElseThrow();
-	}
-
-	public String getGithubClientSecret() {
-		return Optional.ofNullable(System.getenv("GITHUB_CLIENT_SECRET"))
-			.orElseThrow();
-	}
-
-	public String getGoogleClientId() {
-		return Optional.ofNullable(System.getenv("GOOGLE_CLIENT_ID"))
-			.orElseThrow();
-	}
-
-	public String getGoogleClientSecret() {
-		return Optional.ofNullable(System.getenv("GOOGLE_CLIENT_SECRET"))
-			.orElseThrow();
-	}
-
 	public String getAuthBasePath() {
-		return (String) getValue("monkeyShop.http.auth.login");
+		return (String) getValue("monkeyShop.http.auth.basePath");
 	}
 
-	public String getAuthCallbackUrl() {
-		return getServer()
-			.map(x ->
-				x.getString("protocol") + "://" + getHost() + ":" + getPort() + "/" + getContext() + "/" + getVersion()
-					+ getAuthCallbackPath()
-			)
-			.orElseThrow();
+	public String getAuthTokenPath() {
+		return (String) getValue("monkeyShop.http.auth.token");
+	}
+
+	public Integer getJWTExpiresInSec() {
+		return (Integer) getValue("monkeyShop.http.auth.tokenExpiresInSec");
+	}
+
+	public String getAuthJwtPubSec() {
+		return System.getenv("JWT_SECRET");
 	}
 
 	public String getStorageSchema() {
 		return (String) getValue("storage.schema");
 	}
 
-	public int getStoragePort() {
-		return (int) getValue("storage.port");
+	public Integer getStoragePort() {
+		return (Integer) getValue("storage.port");
 	}
 
 	public String getStorageHost() {
@@ -178,8 +161,8 @@ public class SharedConfig {
 		return eraseDb;
 	}
 
-	public String getAuthCallbackPath() {
-		return (String) getValue("monkeyShop.http.auth.callback");
+	public String getUsersBasePath() {
+		return (String) getValue("monkeyShop.http.user.basePath");
 	}
 
 	public String getGetUsersPath() {
@@ -200,6 +183,10 @@ public class SharedConfig {
 
 	public String getDeleteUserPath() {
 		return (String) getValue("monkeyShop.http.user.deleteUser");
+	}
+
+	public String getCustomersBasePath() {
+		return (String) getValue("monkeyShop.http.customer.basePath");
 	}
 
 	public String getGetCustomersPath() {

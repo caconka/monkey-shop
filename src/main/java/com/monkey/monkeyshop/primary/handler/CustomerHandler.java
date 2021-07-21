@@ -2,11 +2,9 @@ package com.monkey.monkeyshop.primary.handler;
 
 import com.monkey.monkeyshop.config.SharedConfig;
 import com.monkey.monkeyshop.domain.logic.CustomerLogic;
-import com.monkey.monkeyshop.logger.Log;
+import com.monkey.monkeyshop.logger.Logger;
 import com.monkey.monkeyshop.primary.adapter.CustomerAdapter;
 import io.netty.handler.codec.http.HttpResponseStatus;
-import io.vertx.core.impl.logging.Logger;
-import io.vertx.core.impl.logging.LoggerFactory;
 import io.vertx.rxjava3.ext.web.Router;
 import io.vertx.rxjava3.ext.web.RoutingContext;
 
@@ -14,9 +12,7 @@ import javax.inject.Inject;
 
 public class CustomerHandler implements DefaultRestHandler {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(CustomerHandler.class);
-
-	private static final String BASE_PATH = "/customers";
+	private static final Logger LOGGER = new Logger(CustomerHandler.class);
 
 	private final CustomerLogic customerLogic;
 	private final String listCustomersPath;
@@ -28,11 +24,13 @@ public class CustomerHandler implements DefaultRestHandler {
 	@Inject
 	public CustomerHandler(CustomerLogic customerLogic, SharedConfig conf) {
 		this.customerLogic = customerLogic;
-		listCustomersPath = BASE_PATH + conf.getGetCustomersPath();
-		createCustomerPath = BASE_PATH + conf.getPostCustomersPath();
-		getCustomerPath = BASE_PATH + conf.getGetCustomerPath();
-		updateCustomerPath = BASE_PATH + conf.getPatchCustomerPath();
-		deleteCustomerPath = BASE_PATH + conf.getDeleteCustomerPath();
+
+		var basePath = conf.getCustomersBasePath();
+		listCustomersPath = basePath + conf.getGetCustomersPath();
+		createCustomerPath = basePath + conf.getPostCustomersPath();
+		getCustomerPath = basePath + conf.getGetCustomerPath();
+		updateCustomerPath = basePath + conf.getPatchCustomerPath();
+		deleteCustomerPath = basePath + conf.getDeleteCustomerPath();
 	}
 
 	@Override
@@ -47,7 +45,7 @@ public class CustomerHandler implements DefaultRestHandler {
 	private void listCustomers(RoutingContext routingCtx) {
 		var ctx = getContext(routingCtx);
 
-		LOGGER.info(Log.build(ctx, LOG_REQUEST_TO + listCustomersPath));
+		LOGGER.info(ctx, LOG_REQUEST_TO + listCustomersPath);
 
 		customerLogic.listCustomers(ctx)
 			.subscribe(
@@ -59,10 +57,10 @@ public class CustomerHandler implements DefaultRestHandler {
 	private void createCustomer(RoutingContext routingCtx) {
 		var ctx = getContext(routingCtx);
 
-		LOGGER.info(Log.build(ctx, LOG_REQUEST_TO + createCustomerPath));
+		LOGGER.info(ctx, LOG_REQUEST_TO + createCustomerPath);
 
 		routingCtx.request().bodyHandler(body -> {
-			LOGGER.info(Log.build(ctx, LOG_REQUEST_BODY + body.toString()));
+			LOGGER.info(ctx, LOG_REQUEST_BODY + body.toString());
 
 			CustomerAdapter.toCustomer(routingCtx, body)
 				.flatMapCompletable(customer -> customerLogic.createCustomer(ctx, customer))
@@ -76,7 +74,7 @@ public class CustomerHandler implements DefaultRestHandler {
 	private void getCustomer(RoutingContext routingCtx) {
 		var ctx = getContext(routingCtx);
 
-		LOGGER.info(Log.build(ctx, LOG_REQUEST_TO + getCustomerPath));
+		LOGGER.info(ctx, LOG_REQUEST_TO + getCustomerPath);
 
 		customerLogic.getCustomer(ctx, CustomerAdapter.toCustomerId(routingCtx))
 			.map(CustomerAdapter::toCustomerDto)
@@ -89,10 +87,10 @@ public class CustomerHandler implements DefaultRestHandler {
 	private void updateCustomer(RoutingContext routingCtx) {
 		var ctx = getContext(routingCtx);
 
-		LOGGER.info(Log.build(ctx, LOG_REQUEST_TO + updateCustomerPath));
+		LOGGER.info(ctx, LOG_REQUEST_TO + updateCustomerPath);
 
 		routingCtx.request().bodyHandler(body -> {
-			LOGGER.info(Log.build(ctx, LOG_REQUEST_BODY + body.toString()));
+			LOGGER.info(ctx, LOG_REQUEST_BODY + body.toString());
 
 			CustomerAdapter.toUpdateCustomer(routingCtx, body)
 				.flatMapCompletable(customer -> customerLogic.updateCustomer(ctx, customer))

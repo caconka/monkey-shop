@@ -2,11 +2,9 @@ package com.monkey.monkeyshop.secondary.postgres.dao;
 
 import com.monkey.monkeyshop.config.SharedConfig;
 import com.monkey.monkeyshop.domain.core.Context;
-import com.monkey.monkeyshop.logger.Log;
+import com.monkey.monkeyshop.logger.Logger;
 import io.reactivex.rxjava3.core.Flowable;
 import io.reactivex.rxjava3.core.Single;
-import io.vertx.core.impl.logging.Logger;
-import io.vertx.core.impl.logging.LoggerFactory;
 import io.vertx.pgclient.PgConnectOptions;
 import io.vertx.rxjava3.core.Vertx;
 import io.vertx.rxjava3.pgclient.PgPool;
@@ -20,7 +18,7 @@ import java.util.concurrent.TimeUnit;
 
 public class StorageClientImpl implements StorageClient {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(StorageClientImpl.class.getName());
+	private static final Logger LOGGER = new Logger(StorageClientImpl.class);
 
 	private static final String SEARCH_PATH_KEY = "search_path";
 
@@ -52,13 +50,13 @@ public class StorageClientImpl implements StorageClient {
 
 	@Override
 	public Single<RowSet<Row>> execute(Context ctx, String sql) {
-		LOGGER.info(Log.build(ctx, "Executing query: " + sql));
+		LOGGER.info(ctx, "Executing query: " + sql);
 
 		return pool.query(sql)
 			.execute()
 			.retryWhen((Flowable<Throwable> f) -> f.take(10).delay(500, TimeUnit.MILLISECONDS))
-			.doOnSuccess(rows -> LOGGER.info(Log.build(ctx, rows.size() + " rows returned")))
-			.doOnError(err -> LOGGER.error(Log.build(ctx, "Cannot execute " + sql + " with error: " + err)));
+			.doOnSuccess(rows -> LOGGER.info(ctx, rows.size() + " rows returned"))
+			.doOnError(err -> LOGGER.error(ctx, "Cannot execute " + sql + " with error: " + err));
 	}
 
 	@Override

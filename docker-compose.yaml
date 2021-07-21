@@ -6,6 +6,6 @@ services:
     ports:
       - "5432:5432"
     environment:
-      POSTGRES_PASSWORD: super_secret
+      POSTGRES_PASSWORD: super_postgres_secret
       POSTGRES_USER: monkey
       POSTGRES_DB: monkeyshop-db

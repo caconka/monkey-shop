@@ -1,6 +1,7 @@
 package com.monkey.monkeyshop.di;
 
 import com.monkey.monkeyshop.config.SharedConfig;
+import com.monkey.monkeyshop.domain.logic.AuthLogic;
 import com.monkey.monkeyshop.domain.logic.CustomerLogic;
 import com.monkey.monkeyshop.domain.logic.UserLogic;
 import com.monkey.monkeyshop.domain.port.StoreDao;
@@ -13,7 +14,6 @@ import dagger.internal.DoubleCheck;
 import dagger.internal.Preconditions;
 import io.vertx.rxjava3.core.Vertx;
 import io.vertx.rxjava3.ext.auth.jwt.JWTAuth;
-import io.vertx.rxjava3.ext.web.client.WebClient;
 import javax.annotation.processing.Generated;
 import javax.inject.Provider;
 
@@ -33,13 +33,13 @@ public final class DaggerHandlerComponents implements HandlerComponents {
 
   private Provider<SharedConfig> provideConfigProvider;
 
-  private Provider<WebClient> provideWebClientProvider;
+  private Provider<StorageClient> provideStorageClientProvider;
 
   private Provider<JWTAuth> proviceJWTAuthProvider;
 
-  private Provider<StorageClient> provideStorageClientProvider;
-
   private Provider<StoreDao> provideStoreDaoProvider;
+
+  private Provider<AuthLogic> provideAuthLogicProvider;
 
   private Provider<UserLogic> provideUserLogicProvider;
 
@@ -66,17 +66,17 @@ public final class DaggerHandlerComponents implements HandlerComponents {
       final DaoModule daoModuleParam) {
     this.provideVertxProvider = DoubleCheck.provider(CommonsModule_ProvideVertxFactory.create(commonsModuleParam));
     this.provideConfigProvider = DoubleCheck.provider(CommonsModule_ProvideConfigFactory.create(commonsModuleParam));
-    this.provideWebClientProvider = DoubleCheck.provider(ClientModule_ProvideWebClientFactory.create(clientModuleParam, provideVertxProvider));
-    this.proviceJWTAuthProvider = DoubleCheck.provider(CommonsModule_ProviceJWTAuthFactory.create(commonsModuleParam, provideVertxProvider));
     this.provideStorageClientProvider = DoubleCheck.provider(ClientModule_ProvideStorageClientFactory.create(clientModuleParam, provideVertxProvider, provideConfigProvider));
-    this.provideStoreDaoProvider = DoubleCheck.provider(DaoModule_ProvideStoreDaoFactory.create(daoModuleParam, provideStorageClientProvider));
+    this.proviceJWTAuthProvider = DoubleCheck.provider(CommonsModule_ProviceJWTAuthFactory.create(commonsModuleParam, provideVertxProvider, provideConfigProvider));
+    this.provideStoreDaoProvider = DoubleCheck.provider(DaoModule_ProvideStoreDaoFactory.create(daoModuleParam, provideStorageClientProvider, proviceJWTAuthProvider, provideConfigProvider));
+    this.provideAuthLogicProvider = DoubleCheck.provider(LogicModule_ProvideAuthLogicFactory.create(logicModuleParam, provideStoreDaoProvider));
     this.provideUserLogicProvider = DoubleCheck.provider(LogicModule_ProvideUserLogicFactory.create(logicModuleParam, provideStoreDaoProvider));
     this.provideCustomerLogicProvider = DoubleCheck.provider(LogicModule_ProvideCustomerLogicFactory.create(logicModuleParam));
   }
 
   @Override
   public AuthHandler buildAuthHandler() {
-    return new AuthHandler(provideVertxProvider.get(), provideConfigProvider.get(), provideWebClientProvider.get(), proviceJWTAuthProvider.get());
+    return new AuthHandler(provideAuthLogicProvider.get(), provideConfigProvider.get());
   }
 
   @Override

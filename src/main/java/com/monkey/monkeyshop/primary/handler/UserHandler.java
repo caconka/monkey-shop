@@ -2,11 +2,9 @@ package com.monkey.monkeyshop.primary.handler;
 
 import com.monkey.monkeyshop.config.SharedConfig;
 import com.monkey.monkeyshop.domain.logic.UserLogic;
-import com.monkey.monkeyshop.logger.Log;
+import com.monkey.monkeyshop.logger.Logger;
 import com.monkey.monkeyshop.primary.adapter.UserAdapter;
 import io.netty.handler.codec.http.HttpResponseStatus;
-import io.vertx.core.impl.logging.Logger;
-import io.vertx.core.impl.logging.LoggerFactory;
 import io.vertx.rxjava3.ext.web.Router;
 import io.vertx.rxjava3.ext.web.RoutingContext;
 
@@ -14,9 +12,7 @@ import javax.inject.Inject;
 
 public class UserHandler implements DefaultRestHandler {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(UserHandler.class);
-
-	private static final String BASE_PATH = "/users";
+	private static final Logger LOGGER = new Logger(UserHandler.class);
 
 	private final UserLogic userLogic;
 	private final String listUsersPath;
@@ -28,11 +24,13 @@ public class UserHandler implements DefaultRestHandler {
 	@Inject
 	public UserHandler(UserLogic userLogic, SharedConfig conf) {
 		this.userLogic = userLogic;
-		listUsersPath = BASE_PATH + conf.getGetUsersPath();
-		createUserPath = BASE_PATH + conf.getPostUsersPath();
-		getUserPath = BASE_PATH + conf.getGetUserPath();
-		updateUserPath = BASE_PATH + conf.getPatchUserPath();
-		deleteUserPath = BASE_PATH + conf.getDeleteUserPath();
+
+		var basePath = conf.getUsersBasePath();
+		listUsersPath = basePath + conf.getGetUsersPath();
+		createUserPath = basePath + conf.getPostUsersPath();
+		getUserPath = basePath + conf.getGetUserPath();
+		updateUserPath = basePath + conf.getPatchUserPath();
+		deleteUserPath = basePath + conf.getDeleteUserPath();
 	}
 
 	@Override
@@ -47,7 +45,7 @@ public class UserHandler implements DefaultRestHandler {
 	private void listUsers(RoutingContext routingCtx) {
 		var ctx = getContext(routingCtx);
 
-		LOGGER.info(Log.build(ctx, LOG_REQUEST_TO + listUsersPath));
+		LOGGER.info(ctx, LOG_REQUEST_TO + listUsersPath);
 
 		userLogic.listUsers(ctx)
 			.subscribe(
@@ -59,10 +57,10 @@ public class UserHandler implements DefaultRestHandler {
 	private void createUser(RoutingContext routingCtx) {
 		var ctx = getContext(routingCtx);
 
-		LOGGER.info(Log.build(ctx, LOG_REQUEST_TO + createUserPath));
+		LOGGER.info(ctx, LOG_REQUEST_TO + createUserPath);
 
 		routingCtx.request().bodyHandler(body -> {
-			LOGGER.info(Log.build(ctx, LOG_REQUEST_BODY + body.toString()));
+			LOGGER.info(ctx, LOG_REQUEST_BODY + body.toString());
 
 			UserAdapter.toUser(routingCtx, body)
 				.flatMapCompletable(user -> userLogic.createUser(ctx, user))
@@ -76,7 +74,7 @@ public class UserHandler implements DefaultRestHandler {
 	private void getUser(RoutingContext routingCtx) {
 		var ctx = getContext(routingCtx);
 
-		LOGGER.info(Log.build(ctx, LOG_REQUEST_TO + getUserPath));
+		LOGGER.info(ctx, LOG_REQUEST_TO + getUserPath);
 
 		userLogic.getUser(ctx, UserAdapter.toUserId(routingCtx))
 			.map(UserAdapter::toUserDto)
@@ -89,10 +87,10 @@ public class UserHandler implements DefaultRestHandler {
 	private void updateUser(RoutingContext routingCtx) {
 		var ctx = getContext(routingCtx);
 
-		LOGGER.info(Log.build(ctx, LOG_REQUEST_TO + updateUserPath));
+		LOGGER.info(ctx, LOG_REQUEST_TO + updateUserPath);
 
 		routingCtx.request().bodyHandler(body -> {
-			LOGGER.info(Log.build(ctx, LOG_REQUEST_BODY + body.toString()));
+			LOGGER.info(ctx, LOG_REQUEST_BODY + body.toString());
 
 			UserAdapter.toUpdateUser(routingCtx, body)
 				.flatMapCompletable(user -> userLogic.updateUser(ctx, user))
@@ -106,7 +104,7 @@ public class UserHandler implements DefaultRestHandler {
 	private void deleteUser(RoutingContext routingCtx) {
 		var ctx = getContext(routingCtx);
 
-		LOGGER.info(Log.build(ctx, LOG_REQUEST_TO + deleteUserPath));
+		LOGGER.info(ctx, LOG_REQUEST_TO + deleteUserPath);
 
 		userLogic.deleteUser(ctx, UserAdapter.toUserId(routingCtx))
 			.subscribe(

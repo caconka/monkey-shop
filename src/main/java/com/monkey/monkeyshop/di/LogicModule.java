@@ -1,5 +1,7 @@
 package com.monkey.monkeyshop.di;
 
+import com.monkey.monkeyshop.domain.logic.AuthLogic;
+import com.monkey.monkeyshop.domain.logic.AuthLogicImpl;
 import com.monkey.monkeyshop.domain.logic.CustomerLogic;
 import com.monkey.monkeyshop.domain.logic.CustomerLogicImpl;
 import com.monkey.monkeyshop.domain.logic.UserLogic;
@@ -25,4 +27,9 @@ public class LogicModule {
 		return new UserLogicImpl(storeDao);
 	}
 
+	@Provides
+	@Singleton
+	public AuthLogic provideAuthLogic(StoreDao storeDao) {
+		return new AuthLogicImpl(storeDao);
+	}
 }

@@ -1,5 +1,6 @@
 package com.monkey.monkeyshop.di;
 
+import com.monkey.monkeyshop.config.SharedConfig;
 import dagger.internal.DaggerGenerated;
 import dagger.internal.Factory;
 import dagger.internal.Preconditions;
@@ -22,22 +23,26 @@ public final class CommonsModule_ProviceJWTAuthFactory implements Factory<JWTAut
 
   private final Provider<Vertx> vertxProvider;
 
-  public CommonsModule_ProviceJWTAuthFactory(CommonsModule module, Provider<Vertx> vertxProvider) {
+  private final Provider<SharedConfig> confProvider;
+
+  public CommonsModule_ProviceJWTAuthFactory(CommonsModule module, Provider<Vertx> vertxProvider,
+      Provider<SharedConfig> confProvider) {
     this.module = module;
     this.vertxProvider = vertxProvider;
+    this.confProvider = confProvider;
   }
 
   @Override
   public JWTAuth get() {
-    return proviceJWTAuth(module, vertxProvider.get());
+    return proviceJWTAuth(module, vertxProvider.get(), confProvider.get());
   }
 
   public static CommonsModule_ProviceJWTAuthFactory create(CommonsModule module,
-      Provider<Vertx> vertxProvider) {
-    return new CommonsModule_ProviceJWTAuthFactory(module, vertxProvider);
+      Provider<Vertx> vertxProvider, Provider<SharedConfig> confProvider) {
+    return new CommonsModule_ProviceJWTAuthFactory(module, vertxProvider, confProvider);
   }
 
-  public static JWTAuth proviceJWTAuth(CommonsModule instance, Vertx vertx) {
-    return Preconditions.checkNotNullFromProvides(instance.proviceJWTAuth(vertx));
+  public static JWTAuth proviceJWTAuth(CommonsModule instance, Vertx vertx, SharedConfig conf) {
+    return Preconditions.checkNotNullFromProvides(instance.proviceJWTAuth(vertx, conf));
   }
 }

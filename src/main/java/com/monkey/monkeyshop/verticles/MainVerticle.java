@@ -2,10 +2,9 @@ package com.monkey.monkeyshop.verticles;
 
 import com.monkey.monkeyshop.config.SharedConfig;
 import com.monkey.monkeyshop.di.DaggerHandlerComponents;
+import com.monkey.monkeyshop.logger.Logger;
 import com.monkey.monkeyshop.primary.handler.DefaultRestHandler;
 import io.vertx.core.http.HttpMethod;
-import io.vertx.core.impl.logging.Logger;
-import io.vertx.core.impl.logging.LoggerFactory;
 import io.vertx.rxjava3.core.AbstractVerticle;
 import io.vertx.rxjava3.core.Vertx;
 import io.vertx.rxjava3.ext.web.Router;
@@ -16,7 +15,7 @@ import java.util.stream.Stream;
 
 public class MainVerticle extends AbstractVerticle {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(MainVerticle.class.getName());
+	private static final Logger LOGGER = new Logger(MainVerticle.class);
 
 	private void startWithHandlers(Vertx vertx, SharedConfig conf, DefaultRestHandler... restHandlers) {
 		var httpHost = conf.getHost();

@@ -1,30 +1,33 @@
 server:
   protocol: http
-  host: 0.0.0.0
-  port: 8888
+  host: 127.0.0.1
+  port: 8080
   context: monkeyshop
   version: v1
 storage:
   versionControl: true
-  eraseDB: false
+  eraseDB: true
   host: 127.0.0.1
   db: monkeyshop-db
-  schema: user_data
+  schema: monkey_data
   port: 5432
   user: monkey
   poolSize: 4
 monkeyShop:
   http:
     auth:
-      login: /authn
-      callback: /authn/callback
+      basePath: /auth
+      token: /token
+      tokenExpiresInSec: 600
     user:
+      basePath: /users
       getUsers: ""
       postUsers: ""
       getUser: /:userId
       patchUser: /:userId
       deleteUser: /:userId
     customer:
+      basePath: /customers
       getCustomers: ""
       postCustomers: ""
       getCustomer: /:customerId

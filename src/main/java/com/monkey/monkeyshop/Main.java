@@ -1,6 +1,7 @@
 package com.monkey.monkeyshop;
 
 import com.monkey.monkeyshop.config.SharedConfig;
+import com.monkey.monkeyshop.logger.Logger;
 import com.monkey.monkeyshop.verticles.MainVerticle;
 import io.reactivex.rxjava3.core.Single;
 import io.reactivex.rxjava3.functions.Consumer;
@@ -8,8 +9,6 @@ import io.vertx.core.AbstractVerticle;
 import io.vertx.core.DeploymentOptions;
 import io.vertx.core.VertxOptions;
 import io.vertx.core.eventbus.EventBusOptions;
-import io.vertx.core.impl.logging.Logger;
-import io.vertx.core.impl.logging.LoggerFactory;
 import io.vertx.core.json.JsonObject;
 import io.vertx.rxjava3.config.ConfigRetriever;
 import io.vertx.rxjava3.core.Vertx;
@@ -19,7 +18,7 @@ import java.util.stream.Collectors;
 
 public class Main {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(MainVerticle.class.getName());
+	private static final Logger LOGGER = new Logger(MainVerticle.class);
 
 	public static void main(String[] args) throws Throwable {
 		run(

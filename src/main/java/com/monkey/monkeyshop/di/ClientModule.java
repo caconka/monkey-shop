@@ -1,6 +1,8 @@
 package com.monkey.monkeyshop.di;
 
 import com.monkey.monkeyshop.config.SharedConfig;
+import com.monkey.monkeyshop.secondary.crm.dao.CrmClient;
+import com.monkey.monkeyshop.secondary.crm.dao.CrmClientImpl;
 import com.monkey.monkeyshop.secondary.postgres.dao.StorageClient;
 import com.monkey.monkeyshop.secondary.postgres.dao.StorageClientImpl;
 import dagger.Module;
@@ -25,4 +27,9 @@ public class ClientModule {
 		return new StorageClientImpl(vertx, conf);
 	}
 
+	@Provides
+	@Singleton
+	public CrmClient provideCrmClient(WebClient client) {
+		return new CrmClientImpl(client);
+	}
 }
