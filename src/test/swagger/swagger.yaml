@@ -1,0 +1,525 @@
+openapi: 3.0.1
+info:
+  title: OpenApi MonkeyShop
+  description: 'This is a sample server MonkeyShop.'
+  contact:
+    email: carloscabezascontra@gmail.com
+  version: 1.0.0
+tags:
+- name: auth
+  description: Authorization and authentication
+- name: user
+  description: Operations about user
+- name: customer
+  description: Operations aboud customer
+paths:
+  /auth/token:
+    post:
+      tags:
+      - auth
+      summary: Get JWT token
+      operationId: getToken
+      requestBody:
+        description: Get token object
+        content:
+          '*/*':
+            schema:
+              $ref: '#/components/schemas/Auth'
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Token'
+        400:
+          description: Invalid username/password supplied
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        401:
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /auth/pwd:
+    patch:
+      tags:
+      - auth
+      summary: Update password
+      description: This can only be done by the logged in user.
+      operationId: updatePassword
+      security:
+      - Bearer: []
+      requestBody:
+        description: Get token object
+        content:
+          '*/*':
+            schema:
+              $ref: '#/components/schemas/Auth'
+      responses:
+        204:
+          description: successful operation
+        400:
+          description: Invalid username/password supplied
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        401:
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /users:
+    get:
+      tags:
+      - user
+      summary: List users
+      description: This can only be done by the logged in user with admin role.
+      operationId: listUsers
+      security:
+      - Bearer: []
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UserRes'
+    post:
+      tags:
+      - user
+      summary: Create user
+      description: This can only be done by the logged in user with admin role.
+      operationId: createUser
+      security:
+      - Bearer: []
+      requestBody:
+        description: Created user object
+        content:
+          '*/*':
+            schema:
+              $ref: '#/components/schemas/UserReq'
+        required: true
+      responses:
+        201:
+          description: successful operation
+        400:
+          description: Invalid input fields
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        401:
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /users/{userId}:
+    get:
+      tags:
+      - user
+      summary: Get user by user name
+      description: This can only be done by the logged in user with admin role.
+      operationId: getUserByName
+      security:
+      - Bearer: []
+      parameters:
+      - name: userId
+        in: path
+        description: 'The id that needs to be fetched'
+        required: true
+        schema:
+          type: string
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserRes'
+        400:
+          description: Invalid input fields
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        401:
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    patch:
+      tags:
+      - user
+      summary: Updated user
+      description: This can only be done by the logged in user with admin role.
+      operationId: updateUser
+      security:
+      - Bearer: []
+      parameters:
+      - name: userId
+        in: path
+        description: name that need to be updated
+        required: true
+        schema:
+          type: string
+      requestBody:
+        description: Updated user object
+        content:
+          '*/*':
+            schema:
+              $ref: '#/components/schemas/UserReq'
+        required: true
+      responses:
+        204:
+          description: successful operation
+        400:
+          description: Invalid input fields
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        401:
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    delete:
+      tags:
+      - user
+      summary: Delete user
+      description: This can only be done by the logged in user with admin role.
+      operationId: deleteUser
+      security:
+      - Bearer: []
+      parameters:
+      - name: userId
+        in: path
+        description: The name that needs to be deleted
+        required: true
+        schema:
+          type: string
+      responses:
+        204:
+          description: successful operation
+        400:
+          description: Invalid input fields
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        401:
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /customers:
+    get:
+      tags:
+      - customer
+      summary: List customers
+      description: This can only be done by the logged in user.
+      operationId: listCustomers
+      security:
+      - Bearer: []
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CustomerRes'
+    post:
+      tags:
+      - customer
+      summary: Create customer
+      description: This can only be done by the logged in user.
+      operationId: createCustomer
+      security:
+      - Bearer: []
+      requestBody:
+        description: Created customer object
+        content:
+          '*/*':
+            schema:
+              $ref: '#/components/schemas/CustomerReq'
+        required: true
+      responses:
+        201:
+          description: successful operation
+        400:
+          description: Invalid input fields
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        401:
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /customers/{customerId}:
+    get:
+      tags:
+      - customer
+      summary: Get customer by customer id
+      description: This can only be done by the logged in user.
+      operationId: getCustomerById
+      security:
+      - Bearer: []
+      parameters:
+      - name: customerId
+        in: path
+        description: 'The id that needs to be fetched'
+        required: true
+        schema:
+          type: string
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomerRes'
+        400:
+          description: Invalid input fields
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        401:
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    patch:
+      tags:
+      - customer
+      summary: Updated customer
+      description: This can only be done by the logged in user.
+      operationId: updateCustomer
+      security:
+      - Bearer: []
+      parameters:
+      - name: customerId
+        in: path
+        description: 'The id that needs to be updated'
+        required: true
+        schema:
+          type: string
+      requestBody:
+        description: Updated customer object
+        content:
+          '*/*':
+            schema:
+              $ref: '#/components/schemas/CustomerReq'
+        required: true
+      responses:
+        204:
+          description: successful operation
+        400:
+          description: Invalid input fields
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        401:
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    delete:
+      tags:
+      - customer
+      summary: Delete customer
+      description: This can only be done by the logged in user.
+      operationId: deleteCustomer
+      security:
+      - Bearer: []
+      parameters:
+      - name: customerId
+        in: path
+        description: 'The id that needs to be deleted'
+        required: true
+        schema:
+          type: string
+      responses:
+        204:
+          description: successful operation
+        400:
+          description: Invalid input fields
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        401:
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /customers/{customerId}/img:
+    patch:
+      tags:
+      - customer
+      summary: Updated customer photo
+      description: This can only be done by the logged in user.
+      operationId: updateCustomerImg
+      security:
+      - Bearer: []
+      parameters:
+      - name: customerId
+        in: path
+        description: 'The id that needs to be updated'
+        required: true
+        schema:
+          type: string
+      requestBody:
+        description: Updated customer object
+        content:
+          '*/*':
+            schema:
+              $ref: '#/components/schemas/CustomerReq'
+        required: true
+      responses:
+        204:
+          description: successful operation
+        400:
+          description: Invalid input fields
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        401:
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+components:
+  schemas:
+    Auth:
+      type: object
+      properties:
+        username:
+          type: string
+          description: The email for login
+        password:
+          type: string
+          description: The password for login
+    Token:
+      type: object
+      properties:
+        accessToken:
+          type: string
+          description: Bearer token
+        expiresIn:
+          type: integer
+          description: Expiration time
+        tokenType:
+          type: string
+          description: Token type (Bearer)
+    UserReq:
+      type: object
+      properties:
+        email:
+          type: string
+        type:
+          type: string
+          enum: [ADMIN, USER]
+    UserRes:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        email:
+          type: string
+        type:
+          type: string
+          enum: [ADMIN, USER]
+        createdAt:
+          type: string
+          format: date
+        createdBy:
+          type: string
+        updatedAt:
+          type: string
+          format: date
+        updatedBy:
+          type: string
+    CustomerReq:
+      type: object
+      properties:
+        email:
+          type: string
+        personal:
+          type: object
+          properties:
+            name:
+              type: string
+            surname:
+              type: string
+            phone:
+              type: string
+    CustomerRes:
+      type: object
+      properties:
+        id:
+          type: string
+        email:
+          type: string
+        personal:
+          type: object
+          properties:
+            name:
+              type: string
+            surname:
+              type: string
+            photo:
+              type: string
+              format: binary
+            phone:
+              type: string
+        createdAt:
+          type: string
+          format: date
+        createdBy:
+          type: string
+        updatedAt:
+          type: string
+          format: date
+        updatedBy:
+          type: string
+    Error:
+      type: object
+      properties:
+        code:
+          type: string
+        status:
+          type: string
+        message:
+          type: string
+        detailMsg:
+          type: string
+  securitySchemes:
+    Bearer:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

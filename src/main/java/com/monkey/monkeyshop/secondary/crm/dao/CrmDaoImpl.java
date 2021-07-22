@@ -7,6 +7,7 @@ import com.monkey.monkeyshop.domain.model.command.UpdateCustomerImgCmd;
 import com.monkey.monkeyshop.domain.port.CrmDao;
 import io.reactivex.rxjava3.core.Completable;
 import io.reactivex.rxjava3.core.Single;
+import io.vertx.core.Vertx;
 
 import javax.inject.Inject;
 import java.util.List;
@@ -42,6 +43,9 @@ public class CrmDaoImpl implements CrmDao {
 
 	@Override
 	public Completable updateCustomerImg(Context ctx, UpdateCustomerImgCmd cmd) {
+//		Vertx.vertx().fileSystem().delete("uploads/" + cmd.getImage().fileName(), deleteRes -> {
+//			LOGGER.warn("Delete file uploaded failed: " + cmd.getImage().fileName(), deleteRes.cause());
+//		});
 		return Completable.complete();
 	}
 
