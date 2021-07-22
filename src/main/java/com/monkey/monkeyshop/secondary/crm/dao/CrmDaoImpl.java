@@ -3,6 +3,7 @@ package com.monkey.monkeyshop.secondary.crm.dao;
 import com.monkey.monkeyshop.domain.core.Context;
 import com.monkey.monkeyshop.domain.model.Customer;
 import com.monkey.monkeyshop.domain.model.User;
+import com.monkey.monkeyshop.domain.model.command.UpdateCustomerImgCmd;
 import com.monkey.monkeyshop.domain.port.CrmDao;
 import io.reactivex.rxjava3.core.Completable;
 import io.reactivex.rxjava3.core.Single;
@@ -36,6 +37,11 @@ public class CrmDaoImpl implements CrmDao {
 
 	@Override
 	public Completable updateCustomer(Context ctx, Customer customer) {
+		return Completable.complete();
+	}
+
+	@Override
+	public Completable updateCustomerImg(Context ctx, UpdateCustomerImgCmd cmd) {
 		return Completable.complete();
 	}
 

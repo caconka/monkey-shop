@@ -2,6 +2,7 @@ package com.monkey.monkeyshop.domain.logic;
 
 import com.monkey.monkeyshop.domain.core.Context;
 import com.monkey.monkeyshop.domain.model.Customer;
+import com.monkey.monkeyshop.domain.model.command.UpdateCustomerImgCmd;
 import com.monkey.monkeyshop.domain.port.CrmDao;
 import io.reactivex.rxjava3.core.Completable;
 import io.reactivex.rxjava3.core.Single;
@@ -37,8 +38,13 @@ public class CustomerLogicImpl implements CustomerLogic {
 	}
 
 	@Override
+	public Completable updateCustomerImg(Context ctx, UpdateCustomerImgCmd cmd) {
+		return crmDao.updateCustomerImg(ctx, cmd);
+	}
+
+	@Override
 	public Completable deleteCustomer(Context ctx, String id) {
-		return crmDao.deleteUser(ctx, id);
+		return crmDao.deleteCustomer(ctx, id);
 	}
 
 }

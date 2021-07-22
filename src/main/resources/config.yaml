@@ -33,4 +33,5 @@ monkeyShop:
       postCustomers: ""
       getCustomer: /:customerId
       patchCustomer: /:customerId
+      patchCustomerImg: /:customerId/img
       deleteCustomer: /:customerId

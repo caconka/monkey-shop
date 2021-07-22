@@ -209,6 +209,10 @@ public class SharedConfig {
 		return (String) getValue("monkeyShop.http.customer.patchCustomer");
 	}
 
+	public String getPatchCustomerImgPath() {
+		return (String) getValue("monkeyShop.http.customer.patchCustomerImg");
+	}
+
 	public String getDeleteCustomerPath() {
 		return (String) getValue("monkeyShop.http.customer.deleteCustomer");
 	}
