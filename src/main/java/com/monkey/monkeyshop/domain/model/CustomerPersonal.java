@@ -6,7 +6,6 @@ public class CustomerPersonal {
 	private String surname;
 	private String photo;
 	private String phone;
-	private String email;
 
 	public String getName() {
 		return name;
@@ -38,13 +37,5 @@ public class CustomerPersonal {
 
 	public void setPhone(String phone) {
 		this.phone = phone;
-	}
-
-	public String getEmail() {
-		return email;
-	}
-
-	public void setEmail(String email) {
-		this.email = email;
 	}
 }

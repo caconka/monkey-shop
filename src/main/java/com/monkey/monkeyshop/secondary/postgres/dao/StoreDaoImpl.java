@@ -1,23 +1,17 @@
 package com.monkey.monkeyshop.secondary.postgres.dao;
 
-import com.monkey.monkeyshop.config.SharedConfig;
 import com.monkey.monkeyshop.domain.core.Context;
-import com.monkey.monkeyshop.domain.model.Token;
 import com.monkey.monkeyshop.domain.model.User;
-import com.monkey.monkeyshop.domain.model.command.TokenCmd;
+import com.monkey.monkeyshop.domain.model.command.UpdatePwdCmd;
 import com.monkey.monkeyshop.domain.port.StoreDao;
-import com.monkey.monkeyshop.error.exceptions.UnauthorizedException;
+import com.monkey.monkeyshop.error.exceptions.ResourceNotFoundException;
 import com.monkey.monkeyshop.logger.Logger;
 import com.monkey.monkeyshop.secondary.postgres.adapter.PostgresAdapter;
 import com.monkey.monkeyshop.secondary.postgres.model.UserAuthzData;
 import io.reactivex.rxjava3.core.Completable;
 import io.reactivex.rxjava3.core.Maybe;
 import io.reactivex.rxjava3.core.Single;
-import io.vertx.core.json.JsonObject;
-import io.vertx.ext.auth.JWTOptions;
-import io.vertx.rxjava3.ext.auth.jwt.JWTAuth;
 import io.vertx.rxjava3.sqlclient.RowSet;
-import org.mindrot.jbcrypt.BCrypt;
 
 import javax.inject.Inject;
 
@@ -26,14 +20,10 @@ public class StoreDaoImpl implements StoreDao {
 	private static final Logger LOGGER = new Logger(StoreDaoImpl.class);
 
 	private final StorageClient client;
-	private final JWTAuth jwt;
-	private final Integer jwtExpiresIn;
 
 	@Inject
-	public StoreDaoImpl(StorageClient client, JWTAuth jwt, SharedConfig conf) {
+	public StoreDaoImpl(StorageClient client) {
 		this.client = client;
-		this.jwt = jwt;
-		jwtExpiresIn = conf.getJWTExpiresInSec();
 
 		client.syncSchemas();
 	}
@@ -57,33 +47,40 @@ public class StoreDaoImpl implements StoreDao {
 	}
 
 	@Override
-	public Single<Token> getToken(Context ctx, TokenCmd cmd) {
-		var query = PostgresAdapter.toSelectUserAuthzByEmail(cmd.getEmail());
+	public Single<User> findUserByEmail(Context ctx, String email) {
+		var query = PostgresAdapter.toSelectUserAuthzByEmail(email);
 
 		return client.execute(ctx, query)
 			.map(RowSet::iterator)
 			.flatMap(it ->
 				it.hasNext()
-					? Single.just(PostgresAdapter.toUserAuthzData(it.next()))
-					: Single.error(new UnauthorizedException())
-			)
-			.flatMap(user ->
-				BCrypt.checkpw(cmd.getPassword(), user.getPassword())
-					? Single.just(PostgresAdapter.toToken(getToken(user, cmd), jwtExpiresIn))
-					: Single.error(new UnauthorizedException())
+					? Single.just(PostgresAdapter.toUser(it.next()))
+					: Single.error(new ResourceNotFoundException("User with email " + email + " not found"))
 			);
 	}
 
-	private String getToken(UserAuthzData user, TokenCmd cmd) {
-		var json = new JsonObject()
-			.put("iss", "monkeyshop.com")
-			.put("sub", cmd.getEmail())
-			.put("role", user.getRole());
+	@Override
+	public Completable updatePwd(Context ctx, UpdatePwdCmd cmd) {
+		var query = PostgresAdapter.toUpdateUserPwd(cmd);
 
-		var opt = new JWTOptions()
-			.setExpiresInSeconds(jwtExpiresIn);
+		return client.execute(ctx, query)
+			.flatMapCompletable(rows -> Completable.complete());
+	}
 
-		return jwt.generateToken(json, opt);
+	@Override
+	public Completable updateUser(Context ctx, User user) {
+		var query = PostgresAdapter.toUpdateUser(user);
+
+		return client.execute(ctx, query)
+			.flatMapCompletable(rows -> Completable.complete());
+	}
+
+	@Override
+	public Completable deleteUser(Context ctx, String email) {
+		var query = PostgresAdapter.toDeleteUser(email);
+
+		return client.execute(ctx, query)
+			.flatMapCompletable(rows -> Completable.complete());
 	}
 
 	private Single<Boolean> updateIfChanged(Context ctx, UserAuthzData oldUser, UserAuthzData newUser) {

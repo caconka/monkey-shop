@@ -1,13 +1,11 @@
-package com.monkey.monkeyshop.primary.model;
+package com.monkey.monkeyshop.secondary.crm.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.monkey.monkeyshop.domain.model.UserType;
 
-public class UserDto {
+public class UserCrm {
 
 	private String id;
 	private String email;
-	@JsonIgnore
 	private String password;
 	private UserType type;
 	private String createdAt;
@@ -21,6 +19,14 @@ public class UserDto {
 
 	public void setId(String id) {
 		this.id = id;
+	}
+
+	public UserType getType() {
+		return type;
+	}
+
+	public void setType(UserType type) {
+		this.type = type;
 	}
 
 	public String getEmail() {
@@ -37,14 +43,6 @@ public class UserDto {
 
 	public void setPassword(String password) {
 		this.password = password;
-	}
-
-	public UserType getType() {
-		return type;
-	}
-
-	public void setType(UserType type) {
-		this.type = type;
 	}
 
 	public String getCreatedAt() {

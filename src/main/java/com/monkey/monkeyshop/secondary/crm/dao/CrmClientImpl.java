@@ -1,14 +1,14 @@
 package com.monkey.monkeyshop.secondary.crm.dao;
 
 import com.monkey.monkeyshop.domain.core.Context;
-import com.monkey.monkeyshop.secondary.model.CustomerCrm;
-import com.monkey.monkeyshop.secondary.model.UserCrm;
-import io.reactivex.rxjava3.core.Completable;
+import com.monkey.monkeyshop.secondary.crm.model.CustomerCrm;
+import com.monkey.monkeyshop.secondary.crm.model.UserCrm;
 import io.reactivex.rxjava3.core.Single;
+import io.vertx.rxjava3.core.buffer.Buffer;
+import io.vertx.rxjava3.ext.web.client.HttpResponse;
 import io.vertx.rxjava3.ext.web.client.WebClient;
 
 import javax.inject.Inject;
-import java.util.List;
 
 public class CrmClientImpl implements CrmClient {
 
@@ -20,62 +20,62 @@ public class CrmClientImpl implements CrmClient {
 	}
 
 	@Override
-	public Single<List<CustomerCrm>> listCustomers(Context ctx) {
+	public Single<HttpResponse<Buffer>> listCustomers(Context ctx) {
 		// Call to CRM
-		return Single.just(List.of(new CustomerCrm()));
+		return null;
 	}
 
 	@Override
-	public Single<CustomerCrm> getCustomer(Context ctx, String id) {
+	public Single<HttpResponse<Buffer>> getCustomer(Context ctx, String id) {
 		// Call to CRM
-		return Single.just(new CustomerCrm());
+		return null;
 	}
 
 	@Override
-	public Completable createCustomer(Context ctx, CustomerCrm customer) {
+	public Single<HttpResponse<Buffer>> createCustomer(Context ctx, CustomerCrm customer) {
 		// Call to CRM
-		return Completable.complete();
+		return null;
 	}
 
 	@Override
-	public Completable updateCustomer(Context ctx, CustomerCrm customer) {
+	public Single<HttpResponse<Buffer>> updateCustomer(Context ctx, CustomerCrm customer) {
 		// Call to CRM
-		return Completable.complete();
+		return null;
 	}
 
 	@Override
-	public Completable deleteCustomer(Context ctx, String id) {
+	public Single<HttpResponse<Buffer>> deleteCustomer(Context ctx, String id) {
 		// Call to CRM
-		return Completable.complete();
+		return null;
 	}
 
 	@Override
-	public Single<List<UserCrm>> listUsers(Context ctx) {
+	public Single<HttpResponse<Buffer>> listUsers(Context ctx) {
 		// Call to CRM
-		return Single.just(List.of(new UserCrm()));
+		return null;
 	}
 
 	@Override
-	public Single<UserCrm> getUser(Context ctx, String id) {
+	public Single<HttpResponse<Buffer>> getUser(Context ctx, String id) {
 		// Call to CRM
-		return Single.just(new UserCrm());
+		return null;
 	}
 
 	@Override
-	public Completable createUser(Context ctx, UserCrm user) {
+	public Single<HttpResponse<Buffer>> createUser(Context ctx, UserCrm user) {
 		// Call to CRM
-		return Completable.complete();
+		return null;
 	}
 
 	@Override
-	public Completable updateUser(Context ctx, UserCrm user) {
+	public Single<HttpResponse<Buffer>> updateUser(Context ctx, UserCrm user) {
 		// Call to CRM
-		return Completable.complete();
+		return null;
 	}
 
 	@Override
-	public Completable deleteUser(Context ctx, String id) {
+	public Single<HttpResponse<Buffer>> deleteUser(Context ctx, String id) {
 		// Call to CRM
-		return Completable.complete();
+		return null;
 	}
 }

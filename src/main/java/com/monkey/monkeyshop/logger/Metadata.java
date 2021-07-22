@@ -1,12 +1,13 @@
 package com.monkey.monkeyshop.logger;
 
 import com.monkey.monkeyshop.domain.core.HttpRequest;
+import com.monkey.monkeyshop.domain.core.UserMetadata;
 import com.monkey.monkeyshop.domain.model.User;
 
 public class Metadata {
 
 	private String traceId;
-	private User user;
+	private UserMetadata user;
 	private HttpRequest httpRequest;
 
 	public String getTraceId() {
@@ -17,11 +18,11 @@ public class Metadata {
 		this.traceId = traceId;
 	}
 
-	public User getUser() {
+	public UserMetadata getUser() {
 		return user;
 	}
 
-	public void setUser(User user) {
+	public void setUser(UserMetadata user) {
 		this.user = user;
 	}
 

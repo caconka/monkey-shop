@@ -1,10 +1,13 @@
-package com.monkey.monkeyshop.domain.model;
+package com.monkey.monkeyshop.secondary.crm.model;
 
-public class Customer {
+public class CustomerCrm {
 
 	private String id;
 	private String email;
-	private CustomerPersonal personal;
+	private String name;
+	private String surname;
+	private String photo;
+	private String phone;
 	private String createdAt;
 	private String createdBy;
 	private String updatedAt;
@@ -26,12 +29,36 @@ public class Customer {
 		this.email = email;
 	}
 
-	public CustomerPersonal getPersonal() {
-		return personal;
+	public String getName() {
+		return name;
 	}
 
-	public void setPersonal(CustomerPersonal personal) {
-		this.personal = personal;
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public String getSurname() {
+		return surname;
+	}
+
+	public void setSurname(String surname) {
+		this.surname = surname;
+	}
+
+	public String getPhoto() {
+		return photo;
+	}
+
+	public void setPhoto(String photo) {
+		this.photo = photo;
+	}
+
+	public String getPhone() {
+		return phone;
+	}
+
+	public void setPhone(String phone) {
+		this.phone = phone;
 	}
 
 	public String getCreatedAt() {

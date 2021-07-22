@@ -1,6 +1,5 @@
 package com.monkey.monkeyshop.domain.core;
 
-import com.monkey.monkeyshop.domain.model.User;
 import com.monkey.monkeyshop.domain.model.UserType;
 import io.vertx.core.json.JsonObject;
 
@@ -10,7 +9,7 @@ public class Context {
 
 	private String authorization;
 	private String traceId;
-	private User userMetadata = new User();
+	private UserMetadata userMetadata = new UserMetadata();
 	private HttpRequest httpRequest = new HttpRequest();
 
 	public Context() {}
@@ -27,11 +26,11 @@ public class Context {
 		this.authorization = authorization;
 	}
 
-	public User getUserMetadata() {
+	public UserMetadata getUserMetadata() {
 		return userMetadata;
 	}
 
-	public void setUserMetadata(User userMetadata) {
+	public void setUserMetadata(UserMetadata userMetadata) {
 		this.userMetadata = userMetadata;
 	}
 
@@ -53,46 +52,42 @@ public class Context {
 
 	public static final class ContextBuilder{
 
-		private final Context context = new Context();
+		private final Context ctx = new Context();
 
 		public Context build(){
-			return context;
+			return ctx;
 		}
 
 		public ContextBuilder withTraceId(String traceId) {
-			this.context.traceId = traceId;
+			this.ctx.traceId = traceId;
 			return this;
 		}
 
 		public ContextBuilder withAuthorization(String authorization) {
 			if (authorization != null && !authorization.isEmpty()) {
-				this.context.authorization = authorization;
-				String[] accessBody = authorization.split("\\.");
-				this.context.userMetadata = new User();
+				this.ctx.authorization = authorization;
+				this.ctx.userMetadata = new UserMetadata();
 
+				var accessBody = authorization.split("\\.");
 				if (accessBody.length > 1) {
 					var body = new JsonObject(new String(Base64.getDecoder().decode(accessBody[1])));
-					var userMetadataDecoded = body.getJsonObject("user_metadata");
+					var email = body.getString("sub");
+					var role = body.getString("role");
 
-					if (userMetadataDecoded != null) {
-						var userDecoded = userMetadataDecoded.getString("id");
-						var admin = userMetadataDecoded.getBoolean("admin");
-
-						this.context.userMetadata.setAdmin(admin);
-						this.context.userMetadata.setId(userDecoded);
-					}
+					this.ctx.userMetadata.setEmail(email);
+					this.ctx.userMetadata.setType(UserType.valueOf(role));
 				}
 			}
 			return this;
 		}
 
 		public ContextBuilder withMethod(String method){
-			this.context.httpRequest.setMethod(method);
+			this.ctx.httpRequest.setMethod(method);
 			return this;
 		}
 
 		public ContextBuilder withPath(String path){
-			this.context.httpRequest.setPath(path);
+			this.ctx.httpRequest.setPath(path);
 			return this;
 		}
 

@@ -9,8 +9,12 @@ public class UserAuthzData {
 	private UserRole role;
 	@JsonProperty("created_at")
 	private String createdAt;
+	@JsonProperty("created_by")
+	private String createdBy;
 	@JsonProperty("updated_at")
 	private String updatedAt;
+	@JsonProperty("updated_by")
+	private String updatedBy;
 
 	public String getEmail() {
 		return email;
@@ -52,4 +56,19 @@ public class UserAuthzData {
 		this.updatedAt = updatedAt;
 	}
 
+	public String getCreatedBy() {
+		return createdBy;
+	}
+
+	public void setCreatedBy(String createdBy) {
+		this.createdBy = createdBy;
+	}
+
+	public String getUpdatedBy() {
+		return updatedBy;
+	}
+
+	public void setUpdatedBy(String updatedBy) {
+		this.updatedBy = updatedBy;
+	}
 }

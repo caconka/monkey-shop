@@ -1,25 +1,24 @@
 package com.monkey.monkeyshop.secondary.crm.dao;
 
 import com.monkey.monkeyshop.domain.core.Context;
-import com.monkey.monkeyshop.secondary.model.CustomerCrm;
-import com.monkey.monkeyshop.secondary.model.UserCrm;
-import io.reactivex.rxjava3.core.Completable;
+import com.monkey.monkeyshop.secondary.crm.model.CustomerCrm;
+import com.monkey.monkeyshop.secondary.crm.model.UserCrm;
 import io.reactivex.rxjava3.core.Single;
-
-import java.util.List;
+import io.vertx.rxjava3.core.buffer.Buffer;
+import io.vertx.rxjava3.ext.web.client.HttpResponse;
 
 public interface CrmClient {
 
-	Single<List<CustomerCrm>> listCustomers(Context ctx);
-	Single<CustomerCrm> getCustomer(Context ctx, String id);
-	Completable createCustomer(Context ctx, CustomerCrm customer);
-	Completable updateCustomer(Context ctx, CustomerCrm customer);
-	Completable deleteCustomer(Context ctx, String id);
+	Single<HttpResponse<Buffer>> listCustomers(Context ctx);
+	Single<HttpResponse<Buffer>> getCustomer(Context ctx, String id);
+	Single<HttpResponse<Buffer>> createCustomer(Context ctx, CustomerCrm customer);
+	Single<HttpResponse<Buffer>> updateCustomer(Context ctx, CustomerCrm customer);
+	Single<HttpResponse<Buffer>> deleteCustomer(Context ctx, String id);
 
-	Single<List<UserCrm>> listUsers(Context ctx);
-	Single<UserCrm> getUser(Context ctx, String id);
-	Completable createUser(Context ctx, UserCrm user);
-	Completable updateUser(Context ctx, UserCrm user);
-	Completable deleteUser(Context ctx, String id);
+	Single<HttpResponse<Buffer>> listUsers(Context ctx);
+	Single<HttpResponse<Buffer>> getUser(Context ctx, String id);
+	Single<HttpResponse<Buffer>> createUser(Context ctx, UserCrm user);
+	Single<HttpResponse<Buffer>> updateUser(Context ctx, UserCrm user);
+	Single<HttpResponse<Buffer>> deleteUser(Context ctx, String id);
 
 }

@@ -18,6 +18,7 @@ monkeyShop:
     auth:
       basePath: /auth
       token: /token
+      pwd: /pwd
       tokenExpiresInSec: 600
     user:
       basePath: /users

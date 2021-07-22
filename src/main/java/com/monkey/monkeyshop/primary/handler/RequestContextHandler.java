@@ -1,7 +1,6 @@
 package com.monkey.monkeyshop.primary.handler;
 
 import com.monkey.monkeyshop.domain.core.Context;
-import com.monkey.monkeyshop.domain.model.User;
 import io.vertx.core.Handler;
 import io.vertx.rxjava3.core.http.HttpServerRequest;
 import io.vertx.rxjava3.ext.web.RoutingContext;
@@ -55,11 +54,6 @@ public class RequestContextHandler implements Handler<RoutingContext> {
 		if (headers.contains("User-Agent")) {
 			var userAgent = (String) headers.get("User-Agent");
 			ctx.getHttpRequest().setUserAgent(userAgent);
-		}
-
-		if (headers.contains("user")) {
-			var user = (String) headers.get("user");
-			ctx.setUserMetadata(new User(user));
 		}
 
 		routingCtx.put(CONTEXT, ctx);

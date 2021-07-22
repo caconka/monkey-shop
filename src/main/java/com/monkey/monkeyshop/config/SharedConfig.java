@@ -99,6 +99,10 @@ public class SharedConfig {
 		return (String) getValue("monkeyShop.http.auth.token");
 	}
 
+	public String getAuthUpdatePwdPath() {
+		return (String) getValue("monkeyShop.http.auth.pwd");
+	}
+
 	public Integer getJWTExpiresInSec() {
 		return (Integer) getValue("monkeyShop.http.auth.tokenExpiresInSec");
 	}

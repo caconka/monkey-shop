@@ -4,16 +4,12 @@ public class User {
 
 	private String id;
 	private String email;
-	private Boolean admin;
+	private String password;
+	private UserType type;
 	private String createdAt;
+	private String createdBy;
 	private String updatedAt;
-
-	public User() {
-	}
-
-	public User(String id) {
-		this.id = id;
-	}
+	private String updatedBy;
 
 	public String getId() {
 		return id;
@@ -23,12 +19,12 @@ public class User {
 		this.id = id;
 	}
 
-	public Boolean getAdmin() {
-		return admin;
+	public UserType getType() {
+		return type;
 	}
 
-	public void setAdmin(Boolean admin) {
-		this.admin = admin;
+	public void setType(UserType type) {
+		this.type = type;
 	}
 
 	public String getEmail() {
@@ -37,6 +33,14 @@ public class User {
 
 	public void setEmail(String email) {
 		this.email = email;
+	}
+
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
 	}
 
 	public String getCreatedAt() {
@@ -53,5 +57,21 @@ public class User {
 
 	public void setUpdatedAt(String updatedAt) {
 		this.updatedAt = updatedAt;
+	}
+
+	public String getCreatedBy() {
+		return createdBy;
+	}
+
+	public void setCreatedBy(String createdBy) {
+		this.createdBy = createdBy;
+	}
+
+	public String getUpdatedBy() {
+		return updatedBy;
+	}
+
+	public void setUpdatedBy(String updatedBy) {
+		this.updatedBy = updatedBy;
 	}
 }

@@ -10,6 +10,7 @@ import io.vertx.core.Handler;
 import io.vertx.core.impl.logging.Logger;
 import io.vertx.core.impl.logging.LoggerFactory;
 import io.vertx.core.json.Json;
+import io.vertx.ext.web.handler.HttpException;
 import io.vertx.rxjava3.ext.web.RoutingContext;
 
 import java.net.UnknownHostException;
@@ -49,6 +50,6 @@ public class DefaultErrorHandler implements Handler<RoutingContext> {
 	private boolean isAuthHandlerError(RoutingContext routingCtx) {
 		return routingCtx.failed()
 			&& HttpResponseStatus.UNAUTHORIZED.code() == routingCtx.statusCode()
-			&& null == routingCtx.failure();
+			&& routingCtx.failure() instanceof HttpException;
 	}
 }

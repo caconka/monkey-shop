@@ -2,6 +2,7 @@ package com.monkey.monkeyshop.domain.logic;
 
 import com.monkey.monkeyshop.domain.core.Context;
 import com.monkey.monkeyshop.domain.model.Customer;
+import com.monkey.monkeyshop.domain.port.CrmDao;
 import io.reactivex.rxjava3.core.Completable;
 import io.reactivex.rxjava3.core.Single;
 
@@ -9,32 +10,35 @@ import java.util.List;
 
 public class CustomerLogicImpl implements CustomerLogic {
 
-	public CustomerLogicImpl() {
+	private final CrmDao crmDao;
+
+	public CustomerLogicImpl(CrmDao crmDao) {
+		this.crmDao = crmDao;
 	}
 
 	@Override
 	public Single<List<Customer>> listCustomers(Context ctx) {
-		return Single.just(List.of(new Customer()));
+		return crmDao.listCustomers(ctx);
 	}
 
 	@Override
 	public Single<Customer> getCustomer(Context ctx, String id) {
-		return Single.just(new Customer());
+		return crmDao.getCustomer(ctx, id);
 	}
 
 	@Override
 	public Completable createCustomer(Context ctx, Customer customer) {
-		return Completable.complete();
+		return crmDao.createCustomer(ctx, customer);
 	}
 
 	@Override
 	public Completable updateCustomer(Context ctx, Customer customer) {
-		return Completable.complete();
+		return crmDao.updateCustomer(ctx, customer);
 	}
 
 	@Override
 	public Completable deleteCustomer(Context ctx, String id) {
-		return Completable.complete();
+		return crmDao.deleteUser(ctx, id);
 	}
 
 }

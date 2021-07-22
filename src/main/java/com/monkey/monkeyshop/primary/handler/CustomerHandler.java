@@ -5,8 +5,10 @@ import com.monkey.monkeyshop.domain.logic.CustomerLogic;
 import com.monkey.monkeyshop.logger.Logger;
 import com.monkey.monkeyshop.primary.adapter.CustomerAdapter;
 import io.netty.handler.codec.http.HttpResponseStatus;
+import io.vertx.rxjava3.ext.auth.jwt.JWTAuth;
 import io.vertx.rxjava3.ext.web.Router;
 import io.vertx.rxjava3.ext.web.RoutingContext;
+import io.vertx.rxjava3.ext.web.handler.JWTAuthHandler;
 
 import javax.inject.Inject;
 
@@ -15,6 +17,8 @@ public class CustomerHandler implements DefaultRestHandler {
 	private static final Logger LOGGER = new Logger(CustomerHandler.class);
 
 	private final CustomerLogic customerLogic;
+	private final JWTAuth jwt;
+	private final String basePath;
 	private final String listCustomersPath;
 	private final String createCustomerPath;
 	private final String getCustomerPath;
@@ -22,10 +26,11 @@ public class CustomerHandler implements DefaultRestHandler {
 	private final String deleteCustomerPath;
 
 	@Inject
-	public CustomerHandler(CustomerLogic customerLogic, SharedConfig conf) {
+	public CustomerHandler(CustomerLogic customerLogic, JWTAuth jwt, SharedConfig conf) {
 		this.customerLogic = customerLogic;
+		this.jwt = jwt;
 
-		var basePath = conf.getCustomersBasePath();
+		basePath = conf.getCustomersBasePath();
 		listCustomersPath = basePath + conf.getGetCustomersPath();
 		createCustomerPath = basePath + conf.getPostCustomersPath();
 		getCustomerPath = basePath + conf.getGetCustomerPath();
@@ -35,6 +40,8 @@ public class CustomerHandler implements DefaultRestHandler {
 
 	@Override
 	public void addHandlersTo(Router router) {
+		router.route(basePath + "/*").handler(JWTAuthHandler.create(jwt));
+
 		addGetHandlerTo(router, listCustomersPath, this::listCustomers);
 		addPostHandlerTo(router, createCustomerPath, this::createCustomer);
 		addGetHandlerTo(router, getCustomerPath, this::getCustomer);
@@ -77,7 +84,6 @@ public class CustomerHandler implements DefaultRestHandler {
 		LOGGER.info(ctx, LOG_REQUEST_TO + getCustomerPath);
 
 		customerLogic.getCustomer(ctx, CustomerAdapter.toCustomerId(routingCtx))
-			.map(CustomerAdapter::toCustomerDto)
 			.subscribe(
 				customer -> makeJsonOkResponse(routingCtx, ctx, customer),
 				err -> manageException(routingCtx, ctx, err)

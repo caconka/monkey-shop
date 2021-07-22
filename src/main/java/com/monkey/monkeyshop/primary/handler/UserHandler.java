@@ -5,8 +5,10 @@ import com.monkey.monkeyshop.domain.logic.UserLogic;
 import com.monkey.monkeyshop.logger.Logger;
 import com.monkey.monkeyshop.primary.adapter.UserAdapter;
 import io.netty.handler.codec.http.HttpResponseStatus;
+import io.vertx.rxjava3.ext.auth.jwt.JWTAuth;
 import io.vertx.rxjava3.ext.web.Router;
 import io.vertx.rxjava3.ext.web.RoutingContext;
+import io.vertx.rxjava3.ext.web.handler.JWTAuthHandler;
 
 import javax.inject.Inject;
 
@@ -15,6 +17,8 @@ public class UserHandler implements DefaultRestHandler {
 	private static final Logger LOGGER = new Logger(UserHandler.class);
 
 	private final UserLogic userLogic;
+	private final JWTAuth jwt;
+	private final String basePath;
 	private final String listUsersPath;
 	private final String createUserPath;
 	private final String getUserPath;
@@ -22,10 +26,11 @@ public class UserHandler implements DefaultRestHandler {
 	private final String deleteUserPath;
 
 	@Inject
-	public UserHandler(UserLogic userLogic, SharedConfig conf) {
+	public UserHandler(UserLogic userLogic, JWTAuth jwt, SharedConfig conf) {
 		this.userLogic = userLogic;
+		this.jwt = jwt;
 
-		var basePath = conf.getUsersBasePath();
+		basePath = conf.getUsersBasePath();
 		listUsersPath = basePath + conf.getGetUsersPath();
 		createUserPath = basePath + conf.getPostUsersPath();
 		getUserPath = basePath + conf.getGetUserPath();
@@ -35,6 +40,10 @@ public class UserHandler implements DefaultRestHandler {
 
 	@Override
 	public void addHandlersTo(Router router) {
+		router.route(basePath + "/*")
+			.handler(JWTAuthHandler.create(jwt))
+			.handler(JwtHandler::checkAdminRole);
+
 		addGetHandlerTo(router, listUsersPath, this::listUsers);
 		addPostHandlerTo(router, createUserPath, this::createUser);
 		addGetHandlerTo(router, getUserPath, this::getUser);
@@ -48,6 +57,7 @@ public class UserHandler implements DefaultRestHandler {
 		LOGGER.info(ctx, LOG_REQUEST_TO + listUsersPath);
 
 		userLogic.listUsers(ctx)
+			.flatMap(UserAdapter::toUsersDto)
 			.subscribe(
 				users -> makeJsonOkResponse(routingCtx, ctx, users),
 				err -> manageException(routingCtx, ctx, err)
@@ -106,10 +116,15 @@ public class UserHandler implements DefaultRestHandler {
 
 		LOGGER.info(ctx, LOG_REQUEST_TO + deleteUserPath);
 
-		userLogic.deleteUser(ctx, UserAdapter.toUserId(routingCtx))
-			.subscribe(
-				() -> makeJsonResponse(routingCtx, ctx, HttpResponseStatus.NO_CONTENT.code(), null),
-				err -> manageException(routingCtx, ctx, err)
-			);
+		routingCtx.request().bodyHandler(body -> {
+			LOGGER.info(ctx, LOG_REQUEST_BODY + body.toString());
+
+			UserAdapter.toDeleteUserCommand(routingCtx, body)
+				.flatMapCompletable(cmd -> userLogic.deleteUser(ctx, cmd))
+				.subscribe(
+					() -> makeJsonResponse(routingCtx, ctx, HttpResponseStatus.NO_CONTENT.code(), null),
+					err -> manageException(routingCtx, ctx, err)
+				);
+		});
 	}
 }
