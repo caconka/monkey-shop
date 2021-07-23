@@ -14,7 +14,7 @@ different team.
 
 - Docker 
 -	Docker-compose
-- Postman for manual testing
+- Postman for manual testing ([collection](src/test/postman/monkey-shop.postman_collection.json))
 
 ## Building
 
