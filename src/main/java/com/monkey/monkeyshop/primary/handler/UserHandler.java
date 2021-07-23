@@ -70,7 +70,6 @@ public class UserHandler implements DefaultRestHandler {
 		LOGGER.info(ctx, LOG_REQUEST_TO + createUserPath);
 
 		routingCtx.request().bodyHandler(body -> {
-			LOGGER.info(ctx, LOG_REQUEST_BODY + body.toString());
 
 			UserAdapter.toUser(routingCtx, body)
 				.flatMapCompletable(user -> userLogic.createUser(ctx, user))
@@ -116,15 +115,11 @@ public class UserHandler implements DefaultRestHandler {
 
 		LOGGER.info(ctx, LOG_REQUEST_TO + deleteUserPath);
 
-		routingCtx.request().bodyHandler(body -> {
-			LOGGER.info(ctx, LOG_REQUEST_BODY + body.toString());
-
-			UserAdapter.toDeleteUserCommand(routingCtx, body)
-				.flatMapCompletable(cmd -> userLogic.deleteUser(ctx, cmd))
-				.subscribe(
-					() -> makeJsonResponse(routingCtx, ctx, HttpResponseStatus.NO_CONTENT.code(), null),
-					err -> manageException(routingCtx, ctx, err)
-				);
-		});
+		UserAdapter.toDeleteUserCommand(routingCtx)
+			.flatMapCompletable(cmd -> userLogic.deleteUser(ctx, cmd))
+			.subscribe(
+				() -> makeJsonResponse(routingCtx, ctx, HttpResponseStatus.NO_CONTENT.code(), null),
+				err -> manageException(routingCtx, ctx, err)
+			);
 	}
 }

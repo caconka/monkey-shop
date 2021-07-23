@@ -5,7 +5,27 @@ services:
     container_name: monkeyshop-postgres
     ports:
       - "5432:5432"
+    healthcheck:
+      test: [ "CMD", "pg_isready", "-q", "-d", "monkeyshop-db", "-U", "monkey" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
     environment:
       POSTGRES_PASSWORD: super_postgres_secret
       POSTGRES_USER: monkey
       POSTGRES_DB: monkeyshop-db
+  monkeyshop:
+    build:
+      context: .
+    image: monkeyshop:latest
+    container_name: monkeyshop-api
+    restart: always
+    depends_on:
+      postgres:
+        condition: service_healthy
+    ports:
+      - "8080:8080"
+    environment:
+      VERTX_CONFIG_PATH: config.yaml
+      POSTGRES_PASSWORD: super_postgres_secret
+      JWT_SECRET: super_jwt_secret

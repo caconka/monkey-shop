@@ -105,7 +105,7 @@ paths:
         content:
           '*/*':
             schema:
-              $ref: '#/components/schemas/UserReq'
+              $ref: '#/components/schemas/CreateUserReq'
         required: true
       responses:
         201:
@@ -177,7 +177,7 @@ paths:
         content:
           '*/*':
             schema:
-              $ref: '#/components/schemas/UserReq'
+              $ref: '#/components/schemas/UpdateUserReq'
         required: true
       responses:
         204:
@@ -206,6 +206,12 @@ paths:
       - name: userId
         in: path
         description: The name that needs to be deleted
+        required: true
+        schema:
+          type: string
+      - name: email
+        in: query
+        description: The user email
         required: true
         schema:
           type: string
@@ -435,7 +441,17 @@ components:
         tokenType:
           type: string
           description: Token type (Bearer)
-    UserReq:
+    CreateUserReq:
+      type: object
+      properties:
+        email:
+          type: string
+        type:
+          type: string
+          enum: [ADMIN, USER]
+        password:
+          type: string
+    UpdateUserReq:
       type: object
       properties:
         email:

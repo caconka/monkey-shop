@@ -60,8 +60,8 @@ public class UserAdapter {
 		return Single.just(usersDto);
 	}
 
-	public static Single<DeleteUserCmd> toDeleteUserCommand(RoutingContext routingCtx, Buffer body) {
-		return EmailValidator.validateEmail(body.toJsonObject().getString("email"))
+	public static Single<DeleteUserCmd> toDeleteUserCommand(RoutingContext routingCtx) {
+		return EmailValidator.validateEmail(routingCtx.request().getParam("email"))
 			.map(email -> {
 				var cmd = new DeleteUserCmd();
 

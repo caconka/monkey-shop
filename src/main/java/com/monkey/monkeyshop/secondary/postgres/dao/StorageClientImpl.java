@@ -20,8 +20,6 @@ public class StorageClientImpl implements StorageClient {
 
 	private static final Logger LOGGER = new Logger(StorageClientImpl.class);
 
-	private static final String SEARCH_PATH_KEY = "search_path";
-
 	private final PgConnectOptions connectOpt;
 	private final String schema;
 	private final boolean versionControl;
@@ -36,7 +34,6 @@ public class StorageClientImpl implements StorageClient {
 		eraseDb = conf.getStorageEraseDb(false);
 
 		connectOpt = new PgConnectOptions()
-			.addProperty(SEARCH_PATH_KEY, schema)
 			.setCachePreparedStatements(true)
 			.setPort(conf.getStoragePort())
 			.setHost(conf.getStorageHost())

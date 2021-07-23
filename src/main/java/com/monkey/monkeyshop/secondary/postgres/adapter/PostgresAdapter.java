@@ -29,13 +29,14 @@ public class PostgresAdapter {
 		+ "("
 		+ FIELD_EMAIL + ","
 		+ FIELD_ROLE + ","
+		+ FIELD_PASSWORD + ","
 		+ FIELD_CREATED_BY + ","
 		+ FIELD_UPDATED_BY + ","
 		+ FIELD_UPDATED_AT + ","
 		+ FIELD_CREATED_AT
 		+ ") VALUES (";
 
-	private static final String INSERT_USER_SUFFIX = ", now(), now())";
+	private static final String INSERT_USER_SUFFIX = " now(), now())";
 
 
 	public static String toSelectUserAuthzByEmail(String email) {
@@ -82,6 +83,7 @@ public class PostgresAdapter {
 		return INSERT_USER_PREFIX
 			+ singleQuote(user.getEmail()) + ","
 			+ singleQuote(user.getRole().name()) + ","
+			+ singleQuote(user.getPassword()) + ","
 			+ singleQuote(user.getCreatedBy()) + ","
 			+ singleQuote(user.getUpdatedBy()) + ","
 			+ INSERT_USER_SUFFIX;

@@ -4,6 +4,7 @@ import com.monkey.monkeyshop.domain.core.Context;
 import com.monkey.monkeyshop.domain.model.User;
 import com.monkey.monkeyshop.domain.model.command.UpdatePwdCmd;
 import com.monkey.monkeyshop.domain.port.StoreDao;
+import com.monkey.monkeyshop.error.exceptions.BadRequestException;
 import com.monkey.monkeyshop.error.exceptions.ResourceNotFoundException;
 import com.monkey.monkeyshop.logger.Logger;
 import com.monkey.monkeyshop.secondary.postgres.adapter.PostgresAdapter;
@@ -37,7 +38,7 @@ public class StoreDaoImpl implements StoreDao {
 			.flatMapMaybe(it -> it.hasNext() ? Maybe.just(PostgresAdapter.toUserAuthzData(it.next())) : Maybe.empty())
 			.flatMap(
 				oldData ->
-					updateIfChanged(ctx, oldData, PostgresAdapter.toUserAuthzData(user)).flatMapMaybe(Maybe::just),
+					Maybe.error(new BadRequestException("User already exists")),
 				err -> {
 					LOGGER.error(ctx, "Cannot search user data in DB: " + err.getMessage());
 					return Maybe.error(err);
@@ -78,36 +79,6 @@ public class StoreDaoImpl implements StoreDao {
 	@Override
 	public Completable deleteUser(Context ctx, String email) {
 		var query = PostgresAdapter.toDeleteUser(email);
-
-		return client.execute(ctx, query)
-			.flatMapCompletable(rows -> Completable.complete());
-	}
-
-	private Single<Boolean> updateIfChanged(Context ctx, UserAuthzData oldUser, UserAuthzData newUser) {
-		if (areBothObjectsEqual(oldUser, newUser)) {
-			LOGGER.info(ctx, "Doctor cancel data has no changes to update in DB");
-			return Single.just(Boolean.FALSE);
-		}
-
-		LOGGER.info(ctx, "Doctor cancel data has changes to update in DB");
-
-		return update(ctx, newUser)
-			.doOnError(err ->
-				LOGGER.error(ctx, "Cannot update doctor cancel data in DB: " + err.getMessage())
-			)
-			.doOnComplete(() ->
-				LOGGER.info(ctx, "Doctor cancel data updated in DB")
-			)
-			.andThen(Single.just(Boolean.TRUE));
-	}
-
-	private boolean areBothObjectsEqual(UserAuthzData oldUser, UserAuthzData newUser) {
-		return oldUser.getEmail() != null && oldUser.getEmail().equals(newUser.getEmail())
-			&& oldUser.getRole() != null && oldUser.getRole() == newUser.getRole();
-	}
-
-	private Completable update(Context ctx, UserAuthzData user) {
-		var query = PostgresAdapter.toUpdate(user);
 
 		return client.execute(ctx, query)
 			.flatMapCompletable(rows -> Completable.complete());
