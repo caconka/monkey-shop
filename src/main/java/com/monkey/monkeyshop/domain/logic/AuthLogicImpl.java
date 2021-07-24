@@ -1,5 +1,6 @@
 package com.monkey.monkeyshop.domain.logic;
 
+import at.favre.lib.crypto.bcrypt.BCrypt;
 import com.monkey.monkeyshop.config.SharedConfig;
 import com.monkey.monkeyshop.domain.core.Context;
 import com.monkey.monkeyshop.domain.model.Token;
@@ -15,7 +16,6 @@ import io.reactivex.rxjava3.core.Single;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.auth.JWTOptions;
 import io.vertx.rxjava3.ext.auth.jwt.JWTAuth;
-import org.mindrot.jbcrypt.BCrypt;
 
 import javax.inject.Inject;
 
@@ -37,7 +37,7 @@ public class AuthLogicImpl implements AuthLogic {
 		return store.findUserByEmail(ctx, cmd.getEmail())
 			.flatMap(
 				user ->
-					BCrypt.checkpw(cmd.getPassword(), user.getPassword())
+					BCrypt.verifyer().verify(cmd.getPassword().toCharArray(), user.getPassword()).verified
 						? Single.just(PostgresAdapter.toToken(getToken(user, cmd), jwtExpiresIn))
 						: Single.error(new UnauthorizedException())
 			);
@@ -45,8 +45,6 @@ public class AuthLogicImpl implements AuthLogic {
 
 	@Override
 	public Completable updatePwd(Context ctx, UpdatePwdCmd cmd) {
-		cmd.setPassword(BCrypt.hashpw(cmd.getPassword(), BCrypt.gensalt()));
-
 		if (cmd.getEmail().equals(cmd.getUpdatedBy())) {
 			return store.updatePwd(ctx, cmd);
 		}

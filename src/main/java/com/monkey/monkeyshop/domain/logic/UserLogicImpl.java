@@ -7,7 +7,6 @@ import com.monkey.monkeyshop.domain.port.CrmDao;
 import com.monkey.monkeyshop.domain.port.StoreDao;
 import io.reactivex.rxjava3.core.Completable;
 import io.reactivex.rxjava3.core.Single;
-import org.mindrot.jbcrypt.BCrypt;
 
 import javax.inject.Inject;
 import java.util.List;
@@ -35,8 +34,6 @@ public class UserLogicImpl implements UserLogic {
 
 	@Override
 	public Completable createUser(Context ctx, User user) {
-		user.setPassword(BCrypt.hashpw(user.getPassword(), BCrypt.gensalt()));
-
 		return crmDao.createUser(ctx, user)
 			.mergeWith(store.save(ctx, user).flatMapCompletable(res -> Completable.complete()));
 	}

@@ -1,5 +1,6 @@
 package com.monkey.monkeyshop.primary.adapter;
 
+import at.favre.lib.crypto.bcrypt.BCrypt;
 import com.monkey.monkeyshop.domain.model.User;
 import com.monkey.monkeyshop.domain.model.UserType;
 import com.monkey.monkeyshop.domain.model.command.DeleteUserCmd;
@@ -20,34 +21,6 @@ public class UserAdapter {
 
 	public static String toUserId(RoutingContext routingCtx) {
 		return routingCtx.request().getParam("userId");
-	}
-
-	public static Single<User> toUser(RoutingContext routingCtx, Buffer body) {
-		UserDto dto;
-
-		try {
-			dto = body.toJsonObject().mapTo(UserDto.class);
-		} catch (Exception err) {
-			return Single.error(new BadRequestException(ERROR_INVALID_BODY));
-		}
-
-		return EmailValidator.validateEmail(dto.getEmail())
-			.map(email -> {
-				var type = Optional.ofNullable(dto.getType())
-					.orElse(UserType.USER);
-				var pwd = Optional.ofNullable(dto.getPassword())
-					.orElse(String.valueOf(System.currentTimeMillis()));
-				var loggedEmail = JwtHandler.getEmail(routingCtx);
-
-				var user = new User();
-				user.setEmail(email);
-				user.setType(type);
-				user.setPassword(pwd);
-				user.setCreatedBy(loggedEmail);
-				user.setUpdatedBy(loggedEmail);
-
-				return user;
-			});
 	}
 
 	public static Single<List<UserDto>> toUsersDto(List<User> users) {
@@ -72,12 +45,67 @@ public class UserAdapter {
 			});
 	}
 
+	public static Single<User> toCreateUser(RoutingContext routingCtx, Buffer body) {
+		return toUserDto(body)
+			.flatMap(dto ->
+				EmailValidator.validateEmail(dto.getEmail())
+					.flatMap(email -> {
+						var type = Optional.ofNullable(dto.getType())
+							.orElse(UserType.USER);
+						var loggedEmail = JwtHandler.getEmail(routingCtx);
+
+						var pwd = body.toJsonObject().getString("password");
+						if (pwd == null || pwd.isEmpty()) {
+							return Single.error(new BadRequestException("Missing field password"));
+						}
+
+						var user = new User();
+						user.setEmail(email);
+						user.setType(type);
+						user.setPassword(BCrypt.withDefaults().hashToString(12, pwd.toCharArray()));
+						user.setCreatedBy(loggedEmail);
+						user.setUpdatedBy(loggedEmail);
+
+						return Single.just(user);
+					})
+			);
+	}
+
 	public static Single<User> toUpdateUser(RoutingContext routingCtx, Buffer body) {
-		return toUser(routingCtx, body)
+		return toUserDto(body)
+			.flatMap(dto ->
+				EmailValidator.validateEmail(dto.getEmail())
+					.map(email -> {
+						var type = Optional.ofNullable(dto.getType())
+							.orElse(UserType.USER);
+						var loggedEmail = JwtHandler.getEmail(routingCtx);
+
+						var user = new User();
+						user.setEmail(email);
+						user.setType(type);
+						user.setCreatedBy(loggedEmail);
+						user.setUpdatedBy(loggedEmail);
+
+						var pwd = dto.getPassword();
+						if (pwd != null && !pwd.isEmpty()) {
+							user.setPassword(pwd);
+						}
+
+						return user;
+					})
+			)
 			.map(user -> {
 				user.setId(toUserId(routingCtx));
 				return user;
 			});
+	}
+
+	public static Single<UserDto> toUserDto(Buffer body) {
+		try {
+			return Single.just(body.toJsonObject().mapTo(UserDto.class));
+		} catch (Exception err) {
+			return Single.error(new BadRequestException(ERROR_INVALID_BODY));
+		}
 	}
 
 	public static UserDto toUserDto(User user) {

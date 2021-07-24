@@ -2,7 +2,6 @@ package com.monkey.monkeyshop.primary.handler;
 
 import com.monkey.monkeyshop.config.SharedConfig;
 import com.monkey.monkeyshop.domain.logic.CustomerLogic;
-import com.monkey.monkeyshop.error.exceptions.BadRequestException;
 import com.monkey.monkeyshop.logger.Logger;
 import com.monkey.monkeyshop.primary.adapter.CustomerAdapter;
 import io.netty.handler.codec.http.HttpResponseStatus;
@@ -45,7 +44,7 @@ public class CustomerHandler implements DefaultRestHandler {
 	@Override
 	public void addHandlersTo(Router router) {
 		router.route(basePath + "/*").handler(JWTAuthHandler.create(jwt));
-		router.route().handler(BodyHandler.create().setUploadsDirectory("uploads"));
+		router.route(updateCustomerImgPath).handler(BodyHandler.create().setUploadsDirectory("uploads"));
 
 		addGetHandlerTo(router, listCustomersPath, this::listCustomers);
 		addPostHandlerTo(router, createCustomerPath, this::createCustomer);

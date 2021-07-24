@@ -69,15 +69,14 @@ public class UserHandler implements DefaultRestHandler {
 
 		LOGGER.info(ctx, LOG_REQUEST_TO + createUserPath);
 
-		routingCtx.request().bodyHandler(body -> {
-
-			UserAdapter.toUser(routingCtx, body)
+		routingCtx.request().bodyHandler(body ->
+			UserAdapter.toCreateUser(routingCtx, body)
 				.flatMapCompletable(user -> userLogic.createUser(ctx, user))
 				.subscribe(
 					() -> makeResponse(routingCtx, ctx, HttpResponseStatus.CREATED.code()),
 					err -> manageException(routingCtx, ctx, err)
-				);
-		});
+				)
+		);
 	}
 
 	private void getUser(RoutingContext routingCtx) {

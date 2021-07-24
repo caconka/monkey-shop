@@ -78,7 +78,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"username\": \"eva@monkeyshop.es\",\n    \"password\": \"newEvaPassword\"\n}",
+					"raw": "{\n    \"username\": \"admin@admin.es\",\n    \"password\": \"newAdminSecret\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -451,12 +451,7 @@
 							"type": "file",
 							"src": []
 						}
-					],
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
+					]
 				},
 				"url": {
 					"raw": "http://localhost:8080/monkeyshop/v1/customers/1234",

@@ -34,7 +34,7 @@ dependencies {
 	implementation("io.vertx:vertx-auth-jwt:$vertxVersion")
 	implementation("org.flywaydb:flyway-core:7.11.3")
 	implementation("org.postgresql:postgresql:42.2.23")
-	implementation("org.mindrot:jbcrypt:0.4")
+	implementation("at.favre.lib:bcrypt:0.9.0")
 	implementation("com.google.dagger:dagger-compiler:2.37")
 	implementation("com.google.dagger:dagger:2.37")
 	annotationProcessor("com.google.dagger:dagger-compiler:2.37")

@@ -1,5 +1,6 @@
 package com.monkey.monkeyshop.primary.adapter;
 
+import at.favre.lib.crypto.bcrypt.BCrypt;
 import com.monkey.monkeyshop.domain.model.command.TokenCmd;
 import com.monkey.monkeyshop.domain.model.command.UpdatePwdCmd;
 import com.monkey.monkeyshop.error.exceptions.BadRequestException;
@@ -23,6 +24,8 @@ public class AuthAdapter {
 					if (pwd == null || pwd.isEmpty()) {
 						return Single.error(new BadRequestException(ERROR_MISSING_PASSWORD));
 					}
+					System.out.println("holi");
+					System.out.println(BCrypt.withDefaults().hashToString(12, pwd.toCharArray()));
 
 					var cmd = new TokenCmd();
 					cmd.setEmail(email);
@@ -45,13 +48,13 @@ public class AuthAdapter {
 					var loggedEmail = JwtHandler.getEmail(routingCtx);
 					var role = JwtHandler.getRole(routingCtx);
 
-					if (loggedEmail == null || loggedEmail.isEmpty() || role == null) {
+					if (loggedEmail == null || loggedEmail.isEmpty() || role == null || !loggedEmail.equals(email)) {
 						return Single.error(new UnauthorizedException());
 					}
 
 					var cmd = new UpdatePwdCmd();
 					cmd.setEmail(email);
-					cmd.setPassword(pwd);
+					cmd.setPassword(BCrypt.withDefaults().hashToString(12, pwd.toCharArray()));
 					cmd.setUpdatedBy(loggedEmail);
 					cmd.setRequestUserType(role);
 
