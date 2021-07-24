@@ -6,6 +6,7 @@ different team.
 
 - [Dependencies](#dependencies)
 - [Building](#building)
+- [Swagger](src/test/swagger/swagger.yaml)	
 - [Architecture](#architecture)
 - [Authorization](#authorization)
 - [Notes](#notes)

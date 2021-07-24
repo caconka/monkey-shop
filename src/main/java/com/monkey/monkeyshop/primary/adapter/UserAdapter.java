@@ -86,11 +86,6 @@ public class UserAdapter {
 						user.setCreatedBy(loggedEmail);
 						user.setUpdatedBy(loggedEmail);
 
-						var pwd = dto.getPassword();
-						if (pwd != null && !pwd.isEmpty()) {
-							user.setPassword(pwd);
-						}
-
 						return user;
 					})
 			)

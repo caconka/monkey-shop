@@ -51,7 +51,7 @@ public class UserHandler implements DefaultRestHandler {
 		addDeleteHandlerTo(router, deleteUserPath, this::deleteUser);
 	}
 
-	private void listUsers(RoutingContext routingCtx) {
+	void listUsers(RoutingContext routingCtx) {
 		var ctx = getContext(routingCtx);
 
 		LOGGER.info(ctx, LOG_REQUEST_TO + listUsersPath);
@@ -64,7 +64,7 @@ public class UserHandler implements DefaultRestHandler {
 			);
 	}
 
-	private void createUser(RoutingContext routingCtx) {
+	void createUser(RoutingContext routingCtx) {
 		var ctx = getContext(routingCtx);
 
 		LOGGER.info(ctx, LOG_REQUEST_TO + createUserPath);
@@ -79,7 +79,7 @@ public class UserHandler implements DefaultRestHandler {
 		);
 	}
 
-	private void getUser(RoutingContext routingCtx) {
+	void getUser(RoutingContext routingCtx) {
 		var ctx = getContext(routingCtx);
 
 		LOGGER.info(ctx, LOG_REQUEST_TO + getUserPath);
@@ -92,7 +92,7 @@ public class UserHandler implements DefaultRestHandler {
 			);
 	}
 
-	private void updateUser(RoutingContext routingCtx) {
+	void updateUser(RoutingContext routingCtx) {
 		var ctx = getContext(routingCtx);
 
 		LOGGER.info(ctx, LOG_REQUEST_TO + updateUserPath);
@@ -109,7 +109,7 @@ public class UserHandler implements DefaultRestHandler {
 		});
 	}
 
-	private void deleteUser(RoutingContext routingCtx) {
+	void deleteUser(RoutingContext routingCtx) {
 		var ctx = getContext(routingCtx);
 
 		LOGGER.info(ctx, LOG_REQUEST_TO + deleteUserPath);
@@ -117,7 +117,7 @@ public class UserHandler implements DefaultRestHandler {
 		UserAdapter.toDeleteUserCommand(routingCtx)
 			.flatMapCompletable(cmd -> userLogic.deleteUser(ctx, cmd))
 			.subscribe(
-				() -> makeJsonResponse(routingCtx, ctx, HttpResponseStatus.NO_CONTENT.code(), null),
+				() -> makeResponse(routingCtx, ctx, HttpResponseStatus.NO_CONTENT.code()),
 				err -> manageException(routingCtx, ctx, err)
 			);
 	}

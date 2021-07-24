@@ -14,8 +14,7 @@ repositories {
   mavenCentral()
 }
 
-val vertxVersion = "4.1.1"
-val junitJupiterVersion = "5.7.0"
+val vertxVersion = "4.1.2"
 
 val mainClassName = "com.monkey.monkeyshop.Main"
 
@@ -25,7 +24,8 @@ application {
 
 dependencies {
   implementation(platform("io.vertx:vertx-stack-depchain:$vertxVersion"))
-  implementation("io.vertx:vertx-config:$vertxVersion")
+  implementation("io.vertx:vertx-core:$vertxVersion")
+	implementation("io.vertx:vertx-config:$vertxVersion")
 	implementation("io.vertx:vertx-config-yaml:$vertxVersion")
 	implementation("io.vertx:vertx-web:$vertxVersion")
 	implementation("io.vertx:vertx-web-client:$vertxVersion")
@@ -39,7 +39,9 @@ dependencies {
 	implementation("com.google.dagger:dagger:2.37")
 	annotationProcessor("com.google.dagger:dagger-compiler:2.37")
   testImplementation("io.vertx:vertx-junit5:$vertxVersion")
-  testImplementation("org.junit.jupiter:junit-jupiter:$junitJupiterVersion")
+  testImplementation("org.junit.jupiter:junit-jupiter:5.7.0")
+	testImplementation("org.mockito:mockito-junit-jupiter:3.11.2")
+	testImplementation("net.javacrumbs.json-unit:json-unit:2.27.0")
 }
 
 java {

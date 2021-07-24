@@ -24,12 +24,12 @@ public class UserLogicImpl implements UserLogic {
 
 	@Override
 	public Single<List<User>> listUsers(Context ctx) {
-		return Single.just(List.of(new User()));
+		return crmDao.listUsers(ctx);
 	}
 
 	@Override
 	public Single<User> getUser(Context ctx, String id) {
-		return Single.just(new User());
+		return crmDao.getUser(ctx, id);
 	}
 
 	@Override
