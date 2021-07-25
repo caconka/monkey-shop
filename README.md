@@ -6,15 +6,16 @@ different team.
 
 - [Dependencies](#dependencies)
 - [Building](#building)
-- [Swagger](src/test/swagger/swagger.yaml)	
+- [Swagger](src/test/swagger/swagger.yaml)
 - [Architecture](#architecture)
 - [Authorization](#authorization)
 - [Notes](#notes)
 
 ## Dependencies
 
-- Docker 
--	Docker-compose
+- Gradle
+- Docker
+- Docker-compose
 - Postman for manual testing ([collection](src/test/postman/monkey-shop.postman_collection.json))
 
 ## Building
@@ -38,7 +39,7 @@ To package your application:
 
 The project has a hexagonal architecture with the following directories:
 - config: Classes that abstract the configuration, so that the same docker image can be deployed on different environment.
-- error: Classes representing the project error model.	
+- error: Classes representing the project error model.
 - logger: Classes to use the same way of printing logs.
 - verticle: Classes that start the running workers.
 - domain: Classes that define the business logic, regardless of any other component that may interact with this one. Distributed in the following packages:
