@@ -61,6 +61,11 @@ public class CustomerAdapter {
 		dto.setUpdatedBy(loggedEmail);
 		dto.setId(toCustomerId(routingCtx));
 
+		if (dto.getEmail() != null) {
+			return EmailValidator.validateEmail(dto.getEmail())
+				.map(email -> dto);
+		}
+
 		return Single.just(dto);
 	}
 

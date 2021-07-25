@@ -43,9 +43,6 @@ public class CrmDaoImpl implements CrmDao {
 
 	@Override
 	public Completable updateCustomerImg(Context ctx, UpdateCustomerImgCmd cmd) {
-//		Vertx.vertx().fileSystem().delete("uploads/" + cmd.getImage().fileName(), deleteRes -> {
-//			LOGGER.warn("Delete file uploaded failed: " + cmd.getImage().fileName(), deleteRes.cause());
-//		});
 		return Completable.complete();
 	}
 

@@ -136,7 +136,7 @@ public class TestUserHandler {
 	}
 
 	@Test
-	public void should_fails_if_crmDao_listUsers_fails() {
+	public void should_not_get_list_if_crmDao_listUsers_fails() {
 		given_crmDao_listUsers_returns_error();
 
 		when_listUsers();
@@ -154,7 +154,7 @@ public class TestUserHandler {
 	}
 
 	@Test
-	public void should_fails_if_crmDao_getUsers_fails() {
+	public void should_not_get_user_if_crmDao_fails() {
 		given_crmDao_getUser_returns_error();
 
 		when_getUser();
@@ -192,7 +192,7 @@ public class TestUserHandler {
 	}
 
 	@Test
-	public void should_fails_creating_user_if_crmDao_fails() throws IllegalAccessException {
+	public void should_not_create_user_if_crmDao_fails() throws IllegalAccessException {
 		given_buffer_request_like_file("mock/req_create_user.json");
 		given_crmDao_createUser_returns_error();
 		when(storageClient.execute(any(Context.class), anyString()))
@@ -205,7 +205,7 @@ public class TestUserHandler {
 	}
 
 	@Test
-	public void should_fails_creating_user_if_storage_fails() throws IllegalAccessException {
+	public void should_not_create_user_if_storage_fails() throws IllegalAccessException {
 		given_buffer_request_like_file("mock/req_create_user.json");
 		given_crmDao_createUser_returns_ok();
 		given_storageClient_execute_returns_error();
@@ -236,7 +236,7 @@ public class TestUserHandler {
 	}
 
 	@Test
-	public void should_fails_updating_user_if_crmDao_fails() throws IllegalAccessException {
+	public void should_not_update_user_if_crmDao_fails() throws IllegalAccessException {
 		given_buffer_request_like_file("mock/req_update_user.json");
 		given_crmDao_updateUser_returns_error();
 		when(storageClient.execute(any(Context.class), anyString()))
@@ -249,7 +249,7 @@ public class TestUserHandler {
 	}
 
 	@Test
-	public void should_fails_updating_user_if_storage_fails() throws IllegalAccessException {
+	public void should_not_update_user_if_storage_fails() throws IllegalAccessException {
 		given_buffer_request_like_file("mock/req_update_user.json");
 		given_crmDao_updateUser_returns_ok();
 		given_storageClient_execute_returns_error();
@@ -280,7 +280,7 @@ public class TestUserHandler {
 	}
 
 	@Test
-	public void should_fails_deleting_user_if_crmDao_fails() {
+	public void should_not_delete_user_if_crmDao_fails() {
 		given_userId_and_email();
 		given_crmDao_deleteUser_returns_error();
 		when(storageClient.execute(any(Context.class), anyString()))
@@ -293,7 +293,7 @@ public class TestUserHandler {
 	}
 
 	@Test
-	public void should_fails_deleting_user_if_storage_fails() {
+	public void should_not_delete_user_if_storage_fails() {
 		given_userId_and_email();
 		given_crmDao_deleteUser_returns_ok();
 		given_storageClient_execute_returns_error();

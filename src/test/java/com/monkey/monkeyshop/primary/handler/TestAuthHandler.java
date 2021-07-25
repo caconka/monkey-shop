@@ -36,7 +36,6 @@ import java.io.InputStreamReader;
 import java.time.LocalDateTime;
 import java.util.stream.Collectors;
 
-import static net.javacrumbs.jsonunit.JsonAssert.assertJsonEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.ArgumentMatchers.any;
@@ -51,7 +50,6 @@ public class TestAuthHandler {
 
 	private static final String DUMMY_BEARER_TOKEN = "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJtb25rZXlzaG9wLmNvbSIsImVtYWlsIjoidGVzdEB0ZXN0LmVzIiwicm9sZSI6IlVTRVIiLCJpYXQiOjE2MjcyMDE3NjEsImV4cCI6MTYyNzIwMjM2MX0.ubef1zJf3K0f-O5q0wAJ3Y4avoY3qwBuZLehvKBcoAg";
 	private static final String DUMMY_TRACE_ID = "trace";
-	private static final String DUMMY_USER_ID = "1234";
 	private static final String DUMMY_EMAIL = "test@test.es";
 	private static final String DUMMY_PWD = "$2a$12$xTQ3pQl28kxLOm5xbkOYi.yqOGtkv2LK4Xv5q5bkp/DHjMTsJrCZK";
 	private static final String DUMMY_ROLE = "USER";

@@ -54,7 +54,7 @@ public class CustomerHandler implements DefaultRestHandler {
 		addDeleteHandlerTo(router, deleteCustomerPath, this::deleteCustomer);
 	}
 
-	private void listCustomers(RoutingContext routingCtx) {
+	void listCustomers(RoutingContext routingCtx) {
 		var ctx = getContext(routingCtx);
 
 		LOGGER.info(ctx, LOG_REQUEST_TO + listCustomersPath);
@@ -66,7 +66,7 @@ public class CustomerHandler implements DefaultRestHandler {
 			);
 	}
 
-	private void createCustomer(RoutingContext routingCtx) {
+	void createCustomer(RoutingContext routingCtx) {
 		var ctx = getContext(routingCtx);
 
 		LOGGER.info(ctx, LOG_REQUEST_TO + createCustomerPath);
@@ -83,7 +83,7 @@ public class CustomerHandler implements DefaultRestHandler {
 		});
 	}
 
-	private void getCustomer(RoutingContext routingCtx) {
+	void getCustomer(RoutingContext routingCtx) {
 		var ctx = getContext(routingCtx);
 
 		LOGGER.info(ctx, LOG_REQUEST_TO + getCustomerPath);
@@ -95,7 +95,7 @@ public class CustomerHandler implements DefaultRestHandler {
 			);
 	}
 
-	private void updateCustomer(RoutingContext routingCtx) {
+	void updateCustomer(RoutingContext routingCtx) {
 		var ctx = getContext(routingCtx);
 
 		LOGGER.info(ctx, LOG_REQUEST_TO + updateCustomerPath);
@@ -112,7 +112,7 @@ public class CustomerHandler implements DefaultRestHandler {
 		});
 	}
 
-	private void updateCustomerImg(RoutingContext routingCtx) {
+	void updateCustomerImg(RoutingContext routingCtx) {
 		var ctx = getContext(routingCtx);
 
 		CustomerAdapter.toUpdateCustomerImgCmd(routingCtx)
@@ -123,7 +123,7 @@ public class CustomerHandler implements DefaultRestHandler {
 			);
 	}
 
-	private void deleteCustomer(RoutingContext routingCtx) {
+	void deleteCustomer(RoutingContext routingCtx) {
 		var ctx = getContext(routingCtx);
 
 		customerLogic.deleteCustomer(ctx, CustomerAdapter.toCustomerId(routingCtx))
