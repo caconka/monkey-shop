@@ -24,8 +24,6 @@ public class AuthAdapter {
 					if (pwd == null || pwd.isEmpty()) {
 						return Single.error(new BadRequestException(ERROR_MISSING_PASSWORD));
 					}
-					System.out.println("holi");
-					System.out.println(BCrypt.withDefaults().hashToString(12, pwd.toCharArray()));
 
 					var cmd = new TokenCmd();
 					cmd.setEmail(email);

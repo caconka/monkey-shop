@@ -5,7 +5,6 @@ import com.monkey.monkeyshop.domain.core.Context;
 import com.monkey.monkeyshop.domain.logic.UserLogicImpl;
 import com.monkey.monkeyshop.domain.model.User;
 import com.monkey.monkeyshop.domain.model.UserType;
-import com.monkey.monkeyshop.domain.model.command.DeleteUserCmd;
 import com.monkey.monkeyshop.domain.port.CrmDao;
 import com.monkey.monkeyshop.error.exceptions.BackendException;
 import com.monkey.monkeyshop.error.exceptions.BadRequestException;
@@ -16,7 +15,6 @@ import io.netty.handler.codec.http.HttpResponseStatus;
 import io.reactivex.rxjava3.core.Completable;
 import io.reactivex.rxjava3.core.Single;
 import io.vertx.core.Handler;
-import io.vertx.core.json.Json;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.auth.PubSecKeyOptions;
 import io.vertx.ext.auth.jwt.JWTAuthOptions;
@@ -40,7 +38,6 @@ import org.mockito.stubbing.Answer;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
-import java.io.Reader;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -51,7 +48,6 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -60,7 +56,7 @@ public class TestUserHandler {
 
 	private static final String DUMMY_USER_ID = "1234";
 	private static final String DUMMY_EMAIL = "pedro@monkeyshop.es";
-	private static final String DUMMY_PWD = "$2a$10$loDmV/55LKAXDfbFC.RFKeluqey05KPTh6ezL.gQ50iajKGtxQM/y";
+	private static final String DUMMY_PWD = "superSecret";
 	private static final String DUMMY_ROLE = "USER";
 	private static final String DUMMY_CREATED_AT = "2021-07-24 11:27:37";
 	private static final String DUMMY_CREATED_BY = "test2@test.es";
@@ -447,7 +443,6 @@ public class TestUserHandler {
 		var expected = createJsonFromFile(filename);
 		assertJsonEquals(expected, responseBody.getValue());
 	}
-
 
 	private void mock_row_set() {
 		when(row.getString(anyString()))

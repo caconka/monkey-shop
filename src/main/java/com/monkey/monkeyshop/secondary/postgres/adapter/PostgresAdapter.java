@@ -50,7 +50,9 @@ public class PostgresAdapter {
 		user.setPassword(row.getString(FIELD_PASSWORD));
 		user.setType(UserType.valueOf(row.getString(FIELD_ROLE)));
 		user.setCreatedAt(row.getLocalDateTime(FIELD_CREATED_AT).toString());
+		user.setCreatedBy(row.getString(FIELD_CREATED_BY));
 		user.setUpdatedAt(row.getLocalDateTime(FIELD_UPDATED_AT).toString());
+		user.setUpdatedBy(row.getString(FIELD_UPDATED_BY));
 
 		return user;
 	}
@@ -62,7 +64,9 @@ public class PostgresAdapter {
 		user.setPassword(row.getString(FIELD_PASSWORD));
 		user.setRole(UserRole.valueOf(row.getString(FIELD_ROLE)));
 		user.setCreatedAt(row.getLocalDateTime(FIELD_CREATED_AT).toString());
+		user.setCreatedBy(row.getString(FIELD_CREATED_BY));
 		user.setUpdatedAt(row.getLocalDateTime(FIELD_UPDATED_AT).toString());
+		user.setUpdatedBy(row.getString(FIELD_UPDATED_BY));
 
 		return user;
 	}

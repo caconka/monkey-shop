@@ -39,7 +39,7 @@ public class AuthHandler implements DefaultRestHandler {
 		addPatchHandlerTo(router, updatePwdPath, this::updatePwd);
 	}
 
-	private void token(RoutingContext routingCtx) {
+	void token(RoutingContext routingCtx) {
 		var ctx = getContext(routingCtx);
 
 		LOGGER.info(ctx, LOG_REQUEST_TO + tokenPath);
@@ -54,7 +54,7 @@ public class AuthHandler implements DefaultRestHandler {
 		);
 	}
 
-	private void updatePwd(RoutingContext routingCtx) {
+	void updatePwd(RoutingContext routingCtx) {
 		var ctx = getContext(routingCtx);
 
 		LOGGER.info(ctx, LOG_REQUEST_TO + updatePwdPath);
